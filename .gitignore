@@ -47,3 +47,6 @@ Thumbs.db
 .env
 *.env
 !*.env.example
+
+# === Freebuff session memory (private conversation data) ===
+.freebuff/
