@@ -54,6 +54,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # GHCR requires lowercase repository names (owner 'NewNexus001' has
+      # uppercase) — compute the lowercased owner:repo at runtime.
+      - name: Compute lowercase GHCR repository
+        run: echo "GHCR_REPO=$(echo ${GITHUB_REPOSITORY} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+
       - name: Build TEE enclave image (deterministic, no provenance)
         id: build-enclave
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
@@ -62,7 +67,7 @@ jobs:
           push: true
           no-cache: true
           provenance: false
-          tags: ghcr.io/${{ github.repository }}/flare-verifiable-rag-enclave:${{ github.sha }}
+          tags: ghcr.io/${{ env.GHCR_REPO }}/flare-verifiable-rag-enclave:${{ github.sha }}
 
       - name: Record image digest to .teedigest
         run: |
