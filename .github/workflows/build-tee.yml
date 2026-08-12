@@ -80,4 +80,7 @@ jobs:
         with:
           name: enclave-digest
           path: .teedigest
+          # .teedigest is a dotfile; upload-artifact v4+ excludes hidden files
+          # by default (verified in action.yml: include-hidden-files default false)
+          include-hidden-files: true
           if-no-files-found: error
