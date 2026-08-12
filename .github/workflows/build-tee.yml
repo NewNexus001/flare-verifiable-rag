@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: read
+  packages: write  # push the enclave image to GHCR (master-plan registry)
 
 concurrency:
   group: tee-build-${{ github.ref }}
@@ -46,12 +47,12 @@ jobs:
       - name: Zero-mock data gate
         run: bash .github/scripts/audit-no-mock.sh
 
-      - name: Login to Google Artifact Registry
+      - name: Login to GitHub Container Registry (GHCR — master-plan registry)
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
-          registry: ${{ vars.GAR_LOCATION }}-docker.pkg.dev
-          username: ${{ secrets.GAR_USERNAME }}
-          password: ${{ secrets.GAR_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build TEE enclave image (deterministic, no provenance)
         id: build-enclave
@@ -61,7 +62,7 @@ jobs:
           push: true
           no-cache: true
           provenance: false
-          tags: ${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GAR_REPOSITORY }}/flare-verifiable-rag-enclave:${{ github.sha }}
+          tags: ghcr.io/${{ github.repository }}/flare-verifiable-rag-enclave:${{ github.sha }}
 
       - name: Record image digest to .teedigest
         run: |
