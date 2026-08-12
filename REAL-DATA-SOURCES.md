@@ -228,3 +228,20 @@ an empty WalletConnect projectId (hence the conditional wallet list), while
 Also fixed during Phase 10 crosscheck: pnpm strict-mode broke `@sentry/nextjs`
 transitive resolution (`@sentry/utils` etc. unpinned) — the 7.107.0 runtime
 companion packages are now direct deps, and a fresh (uncached) build passes.
+
+## Phase 10 release records (Prompts 196-200, 2026-08-12) — LIVE ON GITHUB
+
+| Prompt | Verification | Proof |
+|---|---|---|
+| 196 git commit | initial commit + `.freebuff/` session-memory purge | `f03f7c1` (179 files) + `a8c746b` (gitignore + untrack private chat data); working tree clean, 0 `.freebuff` files in HEAD |
+| 197 push to GitHub | repo created + main pushed (public, judge-accessible) | https://github.com/NewNexus001/flare-verifiable-rag |
+| 198 GH Actions | `build-tee.yml` pipeline GREEN | run `31561337264` success 2m20s; 3 real bugs found & fixed in workflow: dead `pnpm/action-setup` SHA (real v6.0.10 = `ff378ebe…`), GHCR lowercase repo-name (computed at runtime), upload-artifact hidden-file exclusion (dotfile `.teedigest`, `include-hidden-files: true`) |
+| 199 digest match | CI artifact == terraform binding == LIVE GHCR manifest | `sha256:8a1a98fa247bc0895b40ec16e89de96f0d935bd5be11bde02744f373ef207d6e` — anonymous `ghcr.io/v2` manifest HEAD of tag `40475d5c…` returns exactly this digest |
+| 200 final audit | zero-mock scan across full monorepo | exit 0, all checks OK, ports clean |
+
+Production digest lock-in: the CI-emitted digest `sha256:8a1a98fa…` (built on
+GitHub runners, `no-cache`) is the WIP-bound value in `.teedigest` +
+`infra/terraform/terraform.tfvars` (both gitignored). The local dev build
+digest `sha256:c087a350…` differs only because it was built on this laptop —
+the deployed (GHCR) image is the CI one, and Confidential Space will pull
+that exact digest.
