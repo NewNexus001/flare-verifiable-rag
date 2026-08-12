@@ -1,0 +1,18 @@
+# .github/dependabot.yml
+#
+# Weekly grouped updates for GitHub Actions. All action bumps (checkout,
+# pnpm/action-setup, setup-node, login-action, build-push-action,
+# upload-artifact) are consolidated into a single pull request per week,
+# keeping the SHA pins in build-tee.yml current.
+# Schema web-verified against docs.github.com on 2026-08-04.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      github-actions:
+        patterns:
+          - "*"

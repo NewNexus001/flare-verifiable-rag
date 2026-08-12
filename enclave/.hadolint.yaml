@@ -1,0 +1,24 @@
+# enclave/.hadolint.yaml — hadolint (Haskell Dockerfile Linter) configuration.
+# Phase 4 / Prompt 062. The Dockerfile is linted with the pinned binary
+# (v2.15.1, verified 2026-08-06); this file documents the ONE deliberate
+# waiver and why it is safe for this pipeline.
+
+ignored:
+  # DL3008 — "Pin versions in apt get install".
+  #
+  # Deliberately NOT pinned, and this is safe BECAUSE of the pipeline's
+  # digest-lock-in design (build-tee.yml):
+  #   • The final image digest is recorded to .teedigest at build time and is
+  #     what the Workload Identity Pool attribute condition binds to. Whether
+  #     apt versions are pinned or not, that digest fully captures the image
+  #     contents — the TEE attestation property is unaffected.
+  #   • The base image is pinned to `python:3.11-slim-bookworm` (a frozen
+  #     Debian suite), so apt resolves against a stable release line.
+  #   • True apt-level reproducibility requires pinning against a Debian
+  #     snapshot/archive (e.g. deb.debian.org snapshot URLs), which is a
+  #     deployment-time decision; hardcoding current patch versions here
+  #     without a snapshot would make the build stale and unverifiable.
+  # If an audit ever requires byte-for-byte apt reproducibility, that is a
+  # follow-up: switch the base to a digest-pinned image and add a snapshot
+  # sources.list — tracked as a deliberate, documented change.
+  - DL3008

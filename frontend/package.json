@@ -1,0 +1,44 @@
+{
+  "name": "@flare-verifiable-rag/frontend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Next.js 14 Web3 frontend for Flare Verifiable RAG — blind-proxy client with client-side AES-GCM-256 envelope encryption, RainbowKit wallet (Coston2, chain 114), Sentry SRE.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "lint": "next lint",
+    "start": "next start"
+  },
+  "eslintConfig": {
+    "extends": "next/core-web-vitals"
+  },
+  "dependencies": {
+    "@rainbow-me/rainbowkit": "2.0.2",
+    "@sentry/core": "7.107.0",
+    "@sentry/integrations": "7.107.0",
+    "@sentry/nextjs": "7.107.0",
+    "@sentry/node": "7.107.0",
+    "@sentry/react": "7.107.0",
+    "@sentry/types": "7.107.0",
+    "@sentry/utils": "7.107.0",
+    "@sentry/vercel-edge": "7.107.0",
+    "@tanstack/react-query": "^5.0.0",
+    "encoding": "^0.1.13",
+    "framer-motion": "11.0.24",
+    "lucide-react": "0.359.0",
+    "next": "14.1.4",
+    "pino-pretty": "^11.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "viem": "2.8.18",
+    "wagmi": "2.5.11"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.1.4",
+    "typescript": "^5.4.0"
+  }
+}

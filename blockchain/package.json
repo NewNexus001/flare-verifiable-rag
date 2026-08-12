@@ -1,0 +1,28 @@
+{
+  "name": "@flare-verifiable-rag/blockchain",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Solidity 0.8.24 smart contracts for Flare Verifiable RAG — Hardhat v2 toolchain targeting Flare Coston2 (chain 114, EVM cancun).",
+  "scripts": {
+    "build": "hardhat compile",
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:coston2": "hardhat run scripts/deploy.ts --network coston2",
+    "coverage": "hardhat coverage --testfiles 'test/VerifiableRAG.test.ts'",
+    "coverage:full": "hardhat coverage",
+    "_note_coverage_full": "FRAGILE: coverage:full includes the live-Coston2 fork suite, which forks the real chain and has crashed under coverage instrumentation (transient DNS + EDR segfaults). Use the gated 'coverage' script (unit-only) for the >90% branch gate.",
+    "lint": "echo \"[blockchain] solhint lands with the contract phase\""
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "dotenv": "^16.4.7",
+    "hardhat": "^2.26.0",
+    "solc": "0.8.24",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.6.1"
+  }
+}

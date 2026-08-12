@@ -1,0 +1,35 @@
+# enclave/.dockerignore — build-context hygiene for build-tee.yml
+# (context: ./enclave). Without this, every CI build ships gigabytes of
+# Rust artifacts (src/rag_engine/target/) and local junk to the build daemon,
+# slowing builds and bloating the digest-relevant context.
+#
+# NOTE: `target/` MUST stay excluded — it contains the Windows wheel and
+# criterion reports from local development; the Linux wheel is compiled
+# inside the Docker builder stage from the tracked sources.
+
+# VCS
+.git
+.gitignore
+.gitattributes
+
+# Secrets (defense-in-depth — audit-no-mock.sh is the primary gate)
+.env*
+
+# Rust build artifacts (gigabytes) — never shipped to the build daemon
+**/target/
+
+# Python bytecode / caches
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/.pytest_cache/
+**/.mypy_cache/
+
+# Virtualenvs
+**/.venv/
+**/venv/
+
+# Local logs & OS junk
+**/*.log
+.DS_Store
+Thumbs.db

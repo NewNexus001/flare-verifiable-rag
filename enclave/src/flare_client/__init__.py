@@ -1,0 +1,71 @@
+"""Flare blockchain client subpackage (Phase 4 / Prompt 068).
+
+Exposes the web3.py connector for the Flare Coston2 testnet and the FDC
+Web2Json request encoder (Phase 7 / Prompt 125).
+"""
+
+from .fdc_encoder import (
+    COSTON2_DA_LAYER_URL,
+    VERIFIER_URL_TESTNET,
+    WEB2JSON_ATTESTATION_TYPE,
+    WEB2JSON_HTTP_METHODS,
+    WEB2JSON_SOURCE_ID_PUBLIC_WEB2,
+    FdcEncodingError,
+    Web2JsonRequestBody,
+    decode_web2json_request,
+    encode_web2json_request,
+    pad_utf8_bytes32,
+    validate_request_body,
+)
+from .connector import (
+    ATTESTATION_CONTRACT_NAME,
+    COSTON2_CHAIN_ID,
+    COSTON2_RPC_FALLBACK_URL,
+    COSTON2_RPC_URL,
+    ENCLAVE_ATTESTER_KEY_ENV,
+    FEED_BTC_USD,
+    FEED_ETH_USD,
+    FEED_FLR_USD,
+    AbiFetchError,
+    FeedValue,
+    FlareCoston2Client,
+    FlareClientError,
+    NetworkStatus,
+    RegistryNotConfiguredError,
+    RpcUnavailableError,
+    SignerNotConfiguredError,
+    TransactionError,
+    WrongNetworkError,
+)
+
+__all__ = [
+    "ATTESTATION_CONTRACT_NAME",
+    "COSTON2_DA_LAYER_URL",
+    "VERIFIER_URL_TESTNET",
+    "WEB2JSON_ATTESTATION_TYPE",
+    "WEB2JSON_HTTP_METHODS",
+    "WEB2JSON_SOURCE_ID_PUBLIC_WEB2",
+    "FdcEncodingError",
+    "Web2JsonRequestBody",
+    "decode_web2json_request",
+    "encode_web2json_request",
+    "pad_utf8_bytes32",
+    "validate_request_body",
+    "COSTON2_CHAIN_ID",
+    "COSTON2_RPC_FALLBACK_URL",
+    "COSTON2_RPC_URL",
+    "ENCLAVE_ATTESTER_KEY_ENV",
+    "FEED_BTC_USD",
+    "FEED_ETH_USD",
+    "FEED_FLR_USD",
+    "AbiFetchError",
+    "FeedValue",
+    "FlareCoston2Client",
+    "FlareClientError",
+    "NetworkStatus",
+    "RegistryNotConfiguredError",
+    "RpcUnavailableError",
+    "SignerNotConfiguredError",
+    "TransactionError",
+    "WrongNetworkError",
+]

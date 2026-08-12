@@ -1,0 +1,77 @@
+# .github/workflows/build-tee.yml
+#
+# THE TEE LOCK-IN: deterministically builds the enclave container image and
+# records its exact SHA-256 digest. That digest becomes the input to the
+# Workload Identity Pool attribute condition (Confidential Space attestation):
+# only a container running THIS exact digest can acquire the TEE identity.
+#
+# All action versions were web-verified against their GitHub release tags on
+# 2026-08-04 and pinned by commit SHA (supply-chain hardening).
+name: Build TEE Enclave - Digest Lock-In
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tee-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-tee:
+    name: Build enclave + record SHA-256 digest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup pnpm (pinned 10.4.1)
+        uses: pnpm/action-setup@0977fd91986422f281e809e3e3e00be094f9b884 # v6.0.10
+        with:
+          version: 10.4.1
+
+      - name: Setup Node 20
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies (frozen lockfile)
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Zero-mock data gate
+        run: bash .github/scripts/audit-no-mock.sh
+
+      - name: Login to Google Artifact Registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ${{ vars.GAR_LOCATION }}-docker.pkg.dev
+          username: ${{ secrets.GAR_USERNAME }}
+          password: ${{ secrets.GAR_PASSWORD }}
+
+      - name: Build TEE enclave image (deterministic, no provenance)
+        id: build-enclave
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: ./enclave
+          push: true
+          no-cache: true
+          provenance: false
+          tags: ${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GAR_REPOSITORY }}/flare-verifiable-rag-enclave:${{ github.sha }}
+
+      - name: Record image digest to .teedigest
+        run: |
+          printf '%s\n' "${{ steps.build-enclave.outputs.digest }}" > .teedigest
+          echo "Recorded digest:"
+          cat .teedigest
+
+      - name: Upload digest artifact (WIP attestation input)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: enclave-digest
+          path: .teedigest
+          if-no-files-found: error

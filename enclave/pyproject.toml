@@ -1,0 +1,33 @@
+# Pytest configuration for the enclave unit suite (Prompts 073-074).
+#
+# `pythonpath = ["."]` is the professional src/-layout setup (pytest docs,
+# "Good Integration Practices"): with rootdir = enclave/, `src.rag_engine.*`
+# resolves without installing the package. `testpaths` lets plain `pytest`
+# (run from enclave/) discover the suite.
+#
+# TEST-ONLY dependencies (NOT in requirements.txt, which is runtime-only):
+#   pip install pytest hypothesis
+# Run the suite from the repo root with:
+#   python -m pytest enclave/tests
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+# web3.py 6.x registers a pytest11 plugin entrypoint named
+# `pytest_ethereum` (module web3.tools.pytest_ethereum.plugins) that cannot
+# import against the pinned eth_typing in this venv (ContractName removed).
+# It is unrelated to this suite, so it is disabled by entry-point name
+# instead of breaking collection.
+addopts = "-ra -p no:pytest_ethereum"
+
+# pytest-asyncio (Prompt 075): `asyncio_mode = "auto"` drives async test
+# functions and fixtures without per-test markers; function-scoped loop
+# scope gives every test a fresh event loop (the web3.py-under-pytest
+# requirement — no loop-bound aiohttp session reuse across tests).
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+# Live-network marker: tests that make REAL RPC calls to the Flare Coston2
+# testnet and require internet connectivity (skip with `-m "not live"`).
+markers = [
+    "live: hits the LIVE Flare Coston2 testnet (real RPC, network required)",
+]

@@ -1,0 +1,49 @@
+# === Node.js / build artifacts ===
+node_modules/
+.turbo/
+.next/
+dist/
+artifacts/
+cache/
+
+# === Environment & secrets ===
+.env*
+!.env.example
+
+# === Terraform (infra/) ===
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+*.tfplan
+.terraform/
+
+# === TEE attestation digest (SHA-256 lock-in artifact) ===
+.teedigest
+
+# === Phase-generated files (hardhat / TS / coverage) ===
+typechain-types/
+coverage/
+*.tsbuildinfo
+
+# === Rust (enclave/src/rag_engine) ===
+target/
+# Cargo.lock IS committed on purpose: deterministic TEE builds require
+# a pinned dependency graph (same ethos as .teedigest / pnpm-lock.yaml).
+
+# === Local toolchain (downloaded binaries, never committed) ===
+.tools/
+
+# === Logs ===
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# === OS / editor ===
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.env
+*.env
+!*.env.example
