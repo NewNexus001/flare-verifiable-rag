@@ -136,7 +136,7 @@ class ClientPayloadCipher:
     def __init__(self, key: bytes | bytearray | None = None) -> None:
         """Load the key from `ENCLAVE_PAYLOAD_KEY` or use an injected one.
 
-        No default, no fallback, no hardcoded bytes (zero-mock policy): the
+        No default, no fallback, no hardcoded bytes (verified-data policy): the
         enclave refuses to operate without a configured key. The key is
         copied into a scrubbable `bytearray` so `scrub()` can wipe it.
         """

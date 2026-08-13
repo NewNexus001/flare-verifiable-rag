@@ -29,7 +29,7 @@ research-backed (user-provided research + Starlette/FastAPI docs, 2026-08-06):
    TLS cannot be terminated by the healthcheck client. This is a documented,
    deliberately narrow exception.
 
-Environment configuration (zero hardcoded values — zero-mock policy):
+Environment configuration (zero hardcoded values — verified-data policy):
   ENCLAVE_CORS_ORIGINS          comma-separated allowlist; default "" (deny all)
   ENCLAVE_MAX_PAYLOAD_BYTES     payload cap; default 1 MiB
   ENCLAVE_ALLOWED_CONTENT_TYPES comma-separated; default application/json

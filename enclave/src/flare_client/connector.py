@@ -51,7 +51,7 @@ Professional patterns applied (sources: official Flare developer docs —
   `eth_maxPriorityFeePerGas` + latest-block `baseFeePerGas`, nonce, gas
   estimate), signs with the enclave's `ENCLAVE_ATTESTER_KEY`, broadcasts,
   and waits for the receipt.
-* **Registry-resolve pattern (zero-mock policy)** — the project's own
+* **Registry-resolve pattern (verified-data policy)** — the project's own
   audit (`.github/scripts/audit-no-mock.sh`, rule 5) and REAL-DATA-SOURCES.md
   mandate: protocol contract addresses are NEVER hardcoded in logic; they are
   resolved at runtime from the FlareContractRegistry, whose bootstrap
@@ -75,7 +75,7 @@ Professional patterns applied (sources: official Flare developer docs —
   `attestation.submit_attestation_to_flare` (attestation.py → this
   module), keeping this client decoupled from the crypto layer.
 * **Structured errors** — every failure is a typed `FlareClientError`
-  subclass; no silent fallbacks, no fabricated data (zero-mock policy).
+  subclass; no silent fallbacks, no fabricated data (verified-data policy).
 
 All network constants below were verified against the official Flare
 developer hub on 2026-08-06.
@@ -164,7 +164,7 @@ FLARE_EXPLORER_API_URL = "https://coston2-explorer.flare.network/api"
 _ABI_CACHE: dict[str, list[dict[str, Any]]] = {}
 
 # Enclave signer key for attestation transactions (32-byte hex). NO default
-# value in code (zero-mock policy): injected at deploy time exactly like
+# value in code (verified-data policy): injected at deploy time exactly like
 # FLARE_CONTRACT_REGISTRY. Never written to disk anywhere in this repo.
 ENCLAVE_ATTESTER_KEY_ENV = "ENCLAVE_ATTESTER_KEY"
 
@@ -176,7 +176,7 @@ ATTESTATION_CONTRACT_NAME = "VerifiableRAG"
 # Registry names for the FDC attestation submission path (Prompt 138).
 # FdcHub receives requestAttestation(bytes); FdcRequestFeeConfigurations
 # prices it (getRequestFee). Both resolved LIVE from the registry — never
-# hardcoded addresses (zero-mock policy).
+# hardcoded addresses (verified-data policy).
 FDC_HUB_CONTRACT_NAME = "FdcHub"
 FDC_FEE_CONFIG_CONTRACT_NAME = "FdcRequestFeeConfigurations"
 
@@ -446,7 +446,7 @@ class FlareCoston2Client:
     All calls are awaited, timeout-bounded, and raise typed errors on total
     failure — no silent fallbacks. The FlareContractRegistry bootstrap
     address comes from `FLARE_CONTRACT_REGISTRY` env (REAL-DATA-SOURCES.md)
-    — zero hardcoded addresses in logic (zero-mock policy).
+    — zero hardcoded addresses in logic (verified-data policy).
     """
 
     def __init__(
@@ -655,7 +655,7 @@ class FlareCoston2Client:
     def registry_address() -> str:
         """The FlareContractRegistry bootstrap address (from environment).
 
-        NO default in code (zero-mock policy): the documented value lives in
+        NO default in code (verified-data policy): the documented value lives in
         REAL-DATA-SOURCES.md and is injected via `FLARE_CONTRACT_REGISTRY`.
         """
         raw = os.environ.get(FLARE_CONTRACT_REGISTRY_ENV)
@@ -904,7 +904,7 @@ class FlareCoston2Client:
     def attester_key() -> str:
         """The enclave signer key, from `ENCLAVE_ATTESTER_KEY` (hex, 32 bytes).
 
-        NO default in code (zero-mock policy). Validates length (64 hex chars
+        NO default in code (verified-data policy). Validates length (64 hex chars
         with or without `0x`) and raises SignerNotConfiguredError otherwise.
         The key itself is never written to disk in this repository.
         """

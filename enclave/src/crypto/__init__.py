@@ -37,7 +37,7 @@ Deliberately absent anti-patterns: no ECB or unauthenticated CBC, no nonce
 reuse (every :func:`encrypt_aes_gcm` draws a fresh nonce), no hand-rolled
 primitives (everything delegates to the vetted `cryptography` library), no
 secrets near the predictable ``random`` module, no hardcoded keys or
-fallbacks (zero-mock policy — keys come from the environment).
+fallbacks (verified-data policy — keys come from the environment).
 
 Environment contract: key material is injected as environment variables
 (``ENCLAVE_PAYLOAD_KEY``, ``ENCLAVE_ATTESTER_KEY`` — documented in
@@ -317,7 +317,7 @@ def urlsafe_b64decode(value: str) -> bytes:
 def load_hex_key(env_var: str, *, expected_len: int = GCM_KEY_LEN) -> bytearray:
     """Load a hex key from `env_var` as a SCRUBBABLE ``bytearray``.
 
-    No default, no fallback, no hardcoded bytes (zero-mock policy): the
+    No default, no fallback, no hardcoded bytes (verified-data policy): the
     enclave refuses to operate without the configured key. Accepts an
     optional ``0x`` prefix (tolerated, stripped) and any hex-letter case.
     Returns a mutable ``bytearray`` specifically so callers can

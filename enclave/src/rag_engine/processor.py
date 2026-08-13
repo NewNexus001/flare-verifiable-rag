@@ -29,7 +29,7 @@ securely-zeroable, in-memory context processor:
   `ENCLAVE_PAYLOAD_KEY` environment variable (hex, 32 bytes) — the
   attestation-verified ephemeral Diffie–Hellman key exchange belongs to the
   later Hardware Attestation phase (Prompts 081–100) and is deferred by
-  design; zero secrets are hardcoded (zero-mock policy).
+  design; zero secrets are hardcoded (verified-data policy).
 * **Strict RAM scrubbing (Prompt 067)**: the AES-GCM key is held in a
   scrubbable `bytearray` and zeroed **immediately after decryption
   completes**; the decrypted plaintext buffer is zeroed **immediately after
@@ -153,7 +153,7 @@ def _load_payload_key() -> bytearray:
     place, so the key is a bytearray specifically so Prompt 067 can zero it
     immediately after decryption completes. No default, no fallback, no
     hardcoded bytes: the enclave refuses to decrypt without a configured
-    key (zero-mock policy). The attestation-verified ephemeral DH key
+    key (verified-data policy). The attestation-verified ephemeral DH key
     exchange (later phase) will provision this key; for now the operator
     supplies it via the environment.
     """

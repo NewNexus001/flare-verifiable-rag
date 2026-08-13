@@ -1,13 +1,14 @@
 /**
- * next.config.mjs — Next.js 14 build configuration (Phase 9 / Prompt 162).
+ * next.config.mjs — Next.js 14 build configuration.
  *
- * - `reactStrictMode: true` — the master-plan requirement (double-invokes
- *   effects in dev to surface bugs early).
+ * - `reactStrictMode: true` — double-invokes effects in dev to surface bugs
+ *   early.
  * - `withSentryConfig` — @sentry/nextjs 7.107.0 webpack integration for
- *   source maps + server instrumentation. The org/project/authToken come
- *   from the environment ONLY: when they are absent (CI / fresh clone) the
- *   plugin skips the upload step (silent) and the build still succeeds —
- *   no fake token is ever used (zero-mock policy).
+ *   source maps + server instrumentation. Applied ONLY when a real
+ *   SENTRY_AUTH_TOKEN is present (CI with secrets / production): otherwise
+ *   the plain config is exported, so a fresh clone or local build never
+ *   hits the "No Sentry organization slug configured" failure mode. No
+ *   placeholder credentials are ever used.
  * - Security headers — a strict-but-safe baseline (no CSP yet: a mis-scoped
  *   CSP breaks the RainbowKit iframe on next dev; the rest costs nothing).
  */
@@ -41,4 +42,8 @@ const sentryWebpackPluginOptions = {
   silent: true,
 };
 
-export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);
+// Only engage the Sentry webpack plugin when real credentials exist; a bare
+// build must succeed without any Sentry configuration.
+export default process.env.SENTRY_AUTH_TOKEN
+  ? withSentryConfig(nextConfig, sentryWebpackPluginOptions)
+  : nextConfig;

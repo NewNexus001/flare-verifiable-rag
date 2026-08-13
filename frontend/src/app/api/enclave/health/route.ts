@@ -23,7 +23,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         status: "unconfigured",
-        detail: "ENCLAVE_URL is not set on the server — no enclave route configured.",
+        detail: "The enclave service is not deployed. Configure ENCLAVE_URL to enable the health probe.",
       },
       { status: 503 }
     );

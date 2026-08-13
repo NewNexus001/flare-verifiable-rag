@@ -22,7 +22,10 @@ export const dynamic = "force-dynamic";
 export async function POST(req: NextRequest): Promise<NextResponse> {
   if (!ENCLAVE_URL) {
     return NextResponse.json(
-      { status: "unconfigured", detail: "ENCLAVE_URL is not set on the server." },
+      {
+        status: "unconfigured",
+        detail: "The enclave service is not deployed. Configure ENCLAVE_URL to enable secure query processing.",
+      },
       { status: 503 }
     );
   }

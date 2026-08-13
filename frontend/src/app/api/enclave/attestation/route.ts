@@ -17,7 +17,10 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest): Promise<NextResponse> {
   if (!ENCLAVE_URL) {
     return NextResponse.json(
-      { status: "unconfigured", detail: "ENCLAVE_URL is not set on the server." },
+      {
+        status: "unconfigured",
+        detail: "The attestation service is not deployed. Configure ENCLAVE_URL to enable live hardware attestation.",
+      },
       { status: 503 }
     );
   }

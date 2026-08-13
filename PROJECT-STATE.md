@@ -86,7 +86,7 @@ using FDC (FTSO price feeds + FDC attestations). Built prompt-by-prompt from a
   verified source fetched from coston2-explorer API): deployed contract declares exactly
   `function requestAttestation(bytes calldata _data) external payable mustBalance`. Our interface matches 1:1
   (events `AttestationRequest`/`RequestsOffsetSet`/`InflationRewardsOffered` + view fns `requestsOffsetSeconds`/`fdcInflationConfigurations`/`fdcRequestFeeConfigurations`).
-  Compile artifact fresh (Aug 10 12:03), ABI shows `requestAttestation(bytes)` payable, `npx hardhat test test/VerifiableRAG.test.ts` → **55 passing**, audit-no-mock exit 0.
+  Compile artifact fresh (Aug 10 12:03), ABI shows `requestAttestation(bytes)` payable, `npx hardhat test test/VerifiableRAG.test.ts` → **55 passing**, audit-data-integrity exit 0.
 
 - ✅ **118 (coverage >90% branch): PASSED at 90.68%** — journey: 47% → 83% → 88% → 89.8% → **90.68%**
 - ✅ **REAL live deployment on Coston2**: `VerifiableRAG.sol` at
@@ -101,7 +101,7 @@ using FDC (FTSO price feeds + FDC attestations). Built prompt-by-prompt from a
   - approvedImageDigest = `25f55814e809632f5af58eaa2b1d48cec1c49aa6a451c82b6af9fe9de934f421` ✓
   - priceFeedId = zero (unset — fail-closed) ✓
 - ✅ **119 (zero hardcoded keys/mock feeds): PASSED** — static scan clean (no `0x`+64-hex keys, no mock prices, no hardcoded addresses in logic) + live on-chain check PASS (chain 114, code bytes 6848, owner, registry, digest all verified)
-- ✅ **120 (audit-no-mock.sh Phase 6 PoW): PASSED** — exit code 0, all 5 checks OK (see below)
+- ✅ **120 (audit-data-integrity.sh Phase 6 PoW): PASSED** — exit code 0, all 5 checks OK (see below)
 
 ## ⏭️ What's Next (Phase 7+ of the blueprint)
 
@@ -112,11 +112,11 @@ using FDC (FTSO price feeds + FDC attestations). Built prompt-by-prompt from a
 
 | Phase | Prompts | Status |
 |---|---|---|
-| 1 — Monorepo scaffold | 001–020 | ✅ COMPLETE (git init, pnpm workspace, turbo, workflows, audit-no-mock.sh) |
+| 1 — Monorepo scaffold | 001–020 | ✅ COMPLETE (git init, pnpm workspace, turbo, workflows, audit-data-integrity.sh) |
 | 2 — GCP Confidential VM IaC | 021–040 | ✅ COMPLETE (terraform: main.tf, variables.tf, ConfidentialSpace.tf — secure_boot/vtpm/integrity_monitoring) |
 | 3 — Rust ZKP crate `indexer_rs` | 041–060 | ✅ COMPLETE (src/{lib,ast,trie,graph,zkp,ffi}.rs, tests, benches, maturin wheel, 120–123 tests, clippy/fmt/rustdoc clean) |
 | 4 — Enclave Python service | 061–080 | ✅ COMPLETE (requirements.txt w/ CVE bumps, Dockerfile distroless non-root, main.py, processor.py, connector.py, crypto/, config.py, /health + /v1/query, pytest, docker build, audit) |
-| 5 — Attestation engine + GCP vTPM/WIP | 081–100 | ✅ COMPLETE (attestation.py, jwt_parser.py, cli_attest.py, mock_vtpm.py tests, /v1/attestation, /health, audit-no-mock Phase 5 PoW, image digest extraction) |
+| 5 — Attestation engine + GCP vTPM/WIP | 081–100 | ✅ COMPLETE (attestation.py, jwt_parser.py, cli_attest.py, mock_vtpm.py tests, /v1/attestation, /health, audit-data-integrity Phase 5 PoW, image digest extraction) |
 | 6 — Solidity + Coston2 | 101–120 | ✅ **COMPLETE (119 verified clean + live, 120 audit PASS exit 0)** |
 
 ## 🔑 Key Facts & Addresses

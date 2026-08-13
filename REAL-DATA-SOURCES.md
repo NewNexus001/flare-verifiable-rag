@@ -1,4 +1,4 @@
-# REAL-DATA-SOURCES.md — Web-Verified Data Sources (Zero-Mock Compliance)
+# REAL-DATA-SOURCES.md — Web-Verified Data Sources (Verified-Data Compliance)
 
 Every value below was verified via web research against official Flare
 documentation (docs.flare.network / dev.flare.network) on 2026-08-03.
@@ -15,7 +15,7 @@ live sources every future module must read from.
 | HTTPS RPC (failover) | `https://falling-skilled-uranium.flare-coston2.quiknode.pro/ext/bc/C/rpc` | docs.flare.network (network/overview) |
 | WSS RPC | `wss://coston2-api.flare.network/ext/C/ws` | docs.flare.network |
 | Explorer API (getabi) | `https://coston2-explorer.flare.network/api` (`module=contract&action=getabi`) | flare.network explorer (live-verified 2026-08-06) |
-| Enclave signer key env | `ENCLAVE_ATTESTER_KEY` (32-byte hex; NO default — injected at deploy, same pattern as `FLARE_CONTRACT_REGISTRY`) | project zero-mock policy |
+| Enclave signer key env | `ENCLAVE_ATTESTER_KEY` (32-byte hex; NO default — injected at deploy, same pattern as `FLARE_CONTRACT_REGISTRY`) | project verified-data policy |
 | Confidential Space vTPM endpoint override | `ENCLAVE_ATTESTATION_ENDPOINT` (default `http://localhost/v1/token` — the launcher contract; override only for local verification against a REAL tee server on a test port) | google/confidential-space launcher docs, verified 2026-08-07 |
 | Intel Trust Authority endpoint override | `ENCLAVE_INTEL_ATTESTATION_ENDPOINT` (default `http://localhost/v1/intel/token` — the launcher ITA endpoint; override only for local/container verification against a REAL ITA tee server) | Intel Trust Authority GCP CS integration guide, verified 2026-08-07 |
 | Confidential Space tee socket override | `ENCLAVE_TEESERVER_SOCKET` (default `/run/container_launcher/teeserver.sock` — the launcher Unix socket) | google/confidential-space launcher docs, verified 2026-08-07 |
@@ -62,7 +62,7 @@ Note (2026-08-06, live-verified): the FlareContractRegistry's `FtsoV2`
 resolution on Coston2 returns `0xC4e9c78EA53db782E28f28Fdf80BaF59336B304d`
 — which differs from the earlier docs reference above. This is exactly why
 contract addresses are resolved at runtime via the registry and never
-hardcoded in logic (zero-mock policy): documented addresses go stale.
+hardcoded in logic (verified-data policy): documented addresses go stale.
 
 The registry also supports BATCH reads: `getContractAddressesByName(string[])`
 resolves many names in one call (real signature from the registry's verified
@@ -117,7 +117,7 @@ settlement gate and its fork-test fixture:
 | Live verifier | `FdcVerification.verifyWeb2Json(proof) == true` on Coston2 | the exact code path the P131 gate calls |
 
 This endpoint is exempted from the audit's `placeholder` substring marker
-(see `.github/scripts/audit-no-mock.sh`) because the marker targets mock
+(see `.github/scripts/audit-data-integrity.sh`) because the marker targets mock
 placeholder TEXT, while this is a real network-served API that the FDC
 attestor network demonstrably attests over TLS.
 
@@ -146,11 +146,11 @@ plan's Δt formula). The live-read proof: `scripts/read_ftso_v2.ts` against
 the `FTSOv2.test.ts` live cross-check. Also verified live: FTSO v2 protocol
 id = `100` (vs FDC's 200).
 
-## Zero-Mock Policy (enforced)
+## Verified-Data Policy (enforced)
 
 - No hardcoded JSON fixtures, fake prices, simulated responses, or
   placeholder wireframes — ever.
-- Enforcement: `.github/scripts/audit-no-mock.sh` (CI-gate ready).
+- Enforcement: `.github/scripts/audit-data-integrity.sh` (CI-gate ready).
 - All on-chain values resolved at runtime from the FlareContractRegistry.
 - All market data read live from FTSO v2 / FDC on Coston2.
 
@@ -194,7 +194,7 @@ prerender, no errors).
 
 | Item | Value | Proof |
 |---|---|---|
-| Deployed contract (live price read) | `NEXT_PUBLIC_CONTRACT_ADDRESS` — env-injected, never hardcoded in source (zero-mock policy) | `page.tsx` reads `getRealtimePrice` via wagmi `useReadContract` |
+| Deployed contract (live price read) | `NEXT_PUBLIC_CONTRACT_ADDRESS` — env-injected, never hardcoded in source (verified-data policy) | `page.tsx` reads `getRealtimePrice` via wagmi `useReadContract` |
 | FtsoV2 (decimals read) | `NEXT_PUBLIC_FTSO_V2_ADDRESS` — env-injected | live registry value `0xC4e9c78E...B304d` (see FTSO section above) |
 | WalletConnect projectId | `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` — OPTIONAL (cloud.walletconnect.com, free) | without it the modal offers `injectedWallet` (pure EIP-1193) only |
 | Feed id displayed | FXRP/USD `0x015852502f55534400000000000000000000000000` (bytes21, live-verified) | read LIVE from the deployed contract |
@@ -237,7 +237,7 @@ companion packages are now direct deps, and a fresh (uncached) build passes.
 | 197 push to GitHub | repo created + main pushed (public, judge-accessible) | https://github.com/NewNexus001/flare-verifiable-rag |
 | 198 GH Actions | `build-tee.yml` pipeline GREEN | run `31561337264` success 2m20s; 3 real bugs found & fixed in workflow: dead `pnpm/action-setup` SHA (real v6.0.10 = `ff378ebe…`), GHCR lowercase repo-name (computed at runtime), upload-artifact hidden-file exclusion (dotfile `.teedigest`, `include-hidden-files: true`) |
 | 199 digest match | CI artifact == terraform binding == LIVE GHCR manifest | `sha256:8a1a98fa247bc0895b40ec16e89de96f0d935bd5be11bde02744f373ef207d6e` — anonymous `ghcr.io/v2` manifest HEAD of tag `40475d5c…` returns exactly this digest |
-| 200 final audit | zero-mock scan across full monorepo | exit 0, all checks OK, ports clean |
+| 200 final audit | verified-data scan across full monorepo | exit 0, all checks OK, ports clean |
 
 Production digest lock-in: the CI-emitted digest `sha256:8a1a98fa…` (built on
 GitHub runners, `no-cache`) is the WIP-bound value in `.teedigest` +

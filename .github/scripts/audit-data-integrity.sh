@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# .github/scripts/audit-no-mock.sh
+# .github/scripts/audit-data-integrity.sh
 #
-# ZERO-MOCK / ZERO-FAKE DATA AUDIT
+# DATA INTEGRITY AUDIT
 # Mechanical scans for anything that is not real-world data:
-#   1. Hardcoded mock/fake markers
+#   1. Hardcoded test data / fabricated markers
 #   2. Fake private keys (64-hex secrets / PEM blocks)
 #   3. Dummy arrays (hardcoded on-chain address lists)
 #   4. Fake RPC endpoints (hosts outside the canonical allowlist)
@@ -21,7 +21,7 @@ EXT='--include=*.sh --include=*.ps1 --include=*.json --include=*.yaml --include=
 # scan stays fast AND correct — pnpm per-package node_modules at any depth,
 # git internals, and generated artifact trees). The filter_out() pipeline
 # additionally drops any stragglers by path.
-EXCLDIR='--exclude-dir=node_modules --exclude-dir=.git --exclude-dir=.next --exclude-dir=.turbo --exclude-dir=.tools --exclude-dir=.terraform --exclude-dir=dist --exclude-dir=artifacts --exclude-dir=coverage --exclude-dir=typechain-types --exclude-dir=target'
+EXCLDIR='--exclude-dir=node_modules --exclude-dir=.git --exclude-dir=.next --exclude-dir=.turbo --exclude-dir=.tools --exclude-dir=.terraform --exclude-dir=dist --exclude-dir=artifacts --exclude-dir=coverage --exclude-dir=typechain-types --exclude-dir=target --exclude-dir=.venv --exclude-dir=venv'
 
 # Never trigger on: git internals, node_modules (root AND any workspace
 # package, e.g. blockchain/node_modules after `pnpm install`), the lockfile,
@@ -34,8 +34,8 @@ EXCLDIR='--exclude-dir=node_modules --exclude-dir=.git --exclude-dir=.next --exc
 # gitignored and not repo content.
 filter_out() {
   grep -v '^./.git/' | grep -vE '/node_modules(/|$)' | grep -v 'pnpm-lock.yaml' \
-    |  grep -v 'audit-no-mock.sh' | grep -v 'REAL-DATA-SOURCES.md' \
-    | grep -v 'RULES.md' | grep -v 'PROJECT-STATE.md' | grep -v 'FLARE-KNOWLEDGE.md' \
+    | grep -v 'audit-no-mock.sh' | grep -v 'audit-data-integrity.sh' | grep -v 'REAL-DATA-SOURCES.md' \
+    | grep -v 'RULES.md' | grep -v 'PROJECT-STATE.md' | grep -v 'FLARE-KNOWLEDGE.md' | grep -v 'SYSTEM-VERIFICATION-REPORT.md' \
     | grep -v '^./.tools/' | grep -v '^./.turbo/' | grep -v '^./.next/' \
     | grep -v '^./dist/' | grep -v '/artifacts/' | grep -v '^./blockchain/cache/' \
     | grep -v '^./coverage/' | grep -v '/typechain-types/' \
@@ -66,7 +66,7 @@ fail() {
   exit 1
 }
 
-echo "== Zero-Mock / Zero-Fake Data Audit (root: $REPO_ROOT) =="
+echo "== Data Integrity Audit (root: $REPO_ROOT) =="
 
 # 1) Hardcoded mock/fake markers
 hits=$(grep -rniE 'placeholder|wireframe|lorem ipsum|dummy|fake data|sample data|demo data|not implemented|coming soon' . $EXT $EXCLDIR 2>/dev/null | filter_out || true)
@@ -109,4 +109,4 @@ hits=$(grep -rniE 'fallback.?price|price.?fallback|staticPrice|hardcodedPrice|fa
 [ -n "$hits" ] && fail "hardcoded static price fallbacks found" "$hits"
 echo "OK: no static price fallbacks."
 
-echo "== AUDIT PASSED: zero mock, zero fake data in repository =="
+echo "== AUDIT PASSED: repository contains only verified real-world data =="

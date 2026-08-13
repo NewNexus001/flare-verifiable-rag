@@ -66,7 +66,7 @@ flare-verifiable-rag/
 ├── .github/
 │   ├── workflows/build-tee.yml     # TEE digest lock-in (SHA-pinned actions)
 │   ├── dependabot.yml              # weekly grouped action updates
-│   └── scripts/audit-no-mock.sh    # zero-mock enforcement gate (CI)
+│   └── scripts/audit-data-integrity.sh    # verified-data enforcement gate (CI)
 ├── scripts/
 │   ├── create_dirs.sh              # idempotent directory scaffold (bash)
 │   └── create_dirs.ps1             # idempotent directory scaffold (PowerShell)
@@ -163,7 +163,7 @@ Concretely, the codebase will never contain:
 - unverified RPC endpoints — the only endpoints allowed are the canonical
   ones documented in `REAL-DATA-SOURCES.md`.
 
-**Enforcement.** `.github/scripts/audit-no-mock.sh` runs five mechanical scans
+**Enforcement.** `.github/scripts/audit-data-integrity.sh` runs five mechanical scans
 (mock markers, private-key material, hardcoded address lists, RPC endpoints
 outside the allowlist, and hardcoded addresses) and exits non-zero on any
 violation. It runs in CI as a gate (`build-tee.yml`), so a merge that sneaks
@@ -188,7 +188,7 @@ lives in `REAL-DATA-SOURCES.md` — when in doubt, read that file.
 ## Status
 
 Phase 1 (monorepo scaffold & workspace mapping) is complete — verified in
-prompts 001–020, including the zero-mock audit gate. Phase 2 (infrastructure
+prompts 001–020, including the verified-data audit gate. Phase 2 (infrastructure
 as code & GCP Confidential VM) is in progress: the Terraform module under
 `infra/terraform/` currently configures the provider, input variables, and the
 Confidential Space workload VM (AMD SEV-SNP on N2D). The build plan runs

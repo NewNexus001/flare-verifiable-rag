@@ -21,7 +21,7 @@ import {IWeb2Json} from "./interfaces/IWeb2Json.sol";
  * later be finalized against a Flare Data Connector (FDC) attestation
  * (IFdcVerification) and/or verified directly by consumers.
  *
- * Design principles (project zero-mock policy, REAL-DATA-SOURCES.md):
+ * Design principles (project verified-data policy, REAL-DATA-SOURCES.md):
  *  - Protocol contract addresses are NEVER hardcoded in logic. They are
  *    resolved LIVE from the FlareContractRegistry (the same bootstrap address
  *    on every Flare network; injected at deploy time via the constructor).
@@ -171,7 +171,7 @@ contract VerifiableRAG is Ownable, ReentrancyGuard {
 
     /// Reverts when a Flare protocol contract is not (yet) registered in the
     /// FlareContractRegistry — fail-closed, mirroring the enclave connector's
-    /// `ContractResolveError` (zero-mock policy: never operate on a zero
+    /// `ContractResolveError` (verified-data policy: never operate on a zero
     /// address).
     error UnregisteredContract(string name);
 

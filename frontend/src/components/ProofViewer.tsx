@@ -263,7 +263,7 @@ export function ProofViewer({
           <h2 style={{ margin: 0, fontSize: "1.1rem" }}>Execution Proofs &amp; Settlement</h2>
         </div>
         <p style={{ color: "#6b7390", fontSize: "0.85rem", marginTop: "0.75rem" }}>
-          Set NEXT_PUBLIC_CONTRACT_ADDRESS to show live on-chain proofs and receipts.
+          On-chain proofs and receipts are unavailable — contract address not configured.
         </p>
       </div>
     );
@@ -354,7 +354,7 @@ export function ProofViewer({
           }}
         >
           <p style={{ margin: "0 0 0.6rem", color: "#9aa3bf", fontSize: "0.82rem", fontWeight: 600 }}>
-            Last enclave execution record (real, via blind proxy)
+            Last enclave execution record
           </p>
           {executionRecord.status === "ok" ? (
             <dl style={{ margin: 0, display: "grid", gap: "0.35rem", fontSize: "0.82rem" }}>
@@ -384,7 +384,7 @@ export function ProofViewer({
       )}
 
       <p style={{ margin: "0.9rem 0 0", color: "#6b7390", fontSize: "0.78rem" }}>
-        Live reads from VerifiableRAG on Coston2 (chain 114). No simulated values.
+        Live reads from VerifiableRAG on Coston2 (chain 114).
       </p>
     </div>
   );

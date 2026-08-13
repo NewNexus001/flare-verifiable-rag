@@ -92,7 +92,7 @@ function LivePrice() {
   if (!contractAddress) {
     return (
       <p style={{ color: "#6b7390", fontSize: "0.85rem" }}>
-        Set NEXT_PUBLIC_CONTRACT_ADDRESS to show the live on-chain price read.
+        Live price feed unavailable — contract address not configured.
       </p>
     );
   }
@@ -188,7 +188,7 @@ export default function Home() {
             },
             {
               icon: <FileCheck2 size={20} />,
-              title: "Zero-Mock Data",
+              title: "Verified Data",
               body: "Web2 documents are attested by the Flare Data Connector; prices settle against the live FTSO v2 feed on Coston2.",
             },
             {
@@ -236,7 +236,7 @@ export default function Home() {
           }}
         >
           <span>Coston2 (chain 114) · Flare Network</span>
-          <span>Everything you see here reads live chain data — no simulation.</span>
+          <span>All values are read live from the Flare Coston2 network.</span>
         </footer>
       </motion.div>
     </main>

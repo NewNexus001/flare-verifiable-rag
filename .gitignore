@@ -50,3 +50,11 @@ Thumbs.db
 
 # === Freebuff session memory (private conversation data) ===
 .freebuff/
+
+# Python virtualenvs
+.venv/
+venv/
+
+# Python bytecode
+__pycache__/
+*.pyc

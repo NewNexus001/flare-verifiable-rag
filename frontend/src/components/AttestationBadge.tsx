@@ -123,7 +123,7 @@ export function AttestationBadge() {
     attested: { color: "#5fd38c", bg: "rgba(95,211,140,0.10)", label: "Attested" },
     unattested: { color: "#ffb020", bg: "rgba(255,176,32,0.10)", label: "Not attested" },
     unreachable: { color: "#ff9d9d", bg: "rgba(255,157,157,0.10)", label: "Enclave unreachable" },
-    unconfigured: { color: "#9aa3bf", bg: "rgba(154,163,191,0.10)", label: "Enclave not configured" },
+    unconfigured: { color: "#9aa3bf", bg: "rgba(154,163,191,0.10)", label: "Awaiting enclave connection" },
   } as const;
   const p = palette[status];
 
@@ -220,14 +220,14 @@ export function AttestationBadge() {
         >
           {digestMatch
             ? "✓ Enclave digest matches the on-chain approvedImageDigest"
-            : "✗ Enclave digest does NOT match the on-chain approved digest"}
+            : "✗ Enclave digest does not match the on-chain approved digest"}
         </p>
       )}
 
       <p style={{ margin: "0.9rem 0 0", color: "#6b7390", fontSize: "0.78rem", lineHeight: 1.5 }}>
-        Live from the enclave vTPM OIDC claims via the server-side blind proxy;
-        cross-checked against the deployed VerifiableRAG contract on Coston2.
-        No simulated values.
+        Status is read from the enclave vTPM OIDC claims through the server-side
+        blind proxy and cross-checked against the deployed VerifiableRAG contract
+        on Coston2.
       </p>
     </div>
   );

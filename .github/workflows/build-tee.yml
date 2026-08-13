@@ -44,8 +44,8 @@ jobs:
       - name: Install dependencies (frozen lockfile)
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: Zero-mock data gate
-        run: bash .github/scripts/audit-no-mock.sh
+      - name: Data integrity audit
+        run: bash .github/scripts/audit-data-integrity.sh
 
       - name: Login to GitHub Container Registry (GHCR — master-plan registry)
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
