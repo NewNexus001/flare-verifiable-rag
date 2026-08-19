@@ -143,5 +143,11 @@
     "vtpmClaims": "Reclamaciones OIDC vTPM via proxy ciego",
     "teeAttestation": "Atestación TEE",
     "selectLanguage": "Seleccionar idioma"
+  },
+  "gate": {
+    "description": "Conecta tu monedero para acceder al oráculo de conocimiento verificable. Todas las lecturas de datos, subidas encriptadas y liquidaciones on-chain requieren una sesión Web3 autenticada.",
+    "trust1": "Cifrado AES-GCM-256 del lado del cliente",
+    "trust2": "Cero almacenamiento en caché — modelo de proxy ciego",
+    "trust3": "Liquidación on-chain en Flare Coston2"
   }
 }

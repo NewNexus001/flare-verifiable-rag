@@ -143,5 +143,11 @@
     "vtpmClaims": "vTPM OIDC claims via blind proxy",
     "teeAttestation": "TEE Attestation",
     "selectLanguage": "Select language"
+  },
+  "gate": {
+    "description": "Connect your wallet to access the verifiable knowledge oracle. All data reads, encrypted document uploads, and on-chain settlements require an authenticated Web3 session.",
+    "trust1": "Client-side AES-GCM-256 encryption",
+    "trust2": "Zero data caching — blind proxy model",
+    "trust3": "On-chain settlement on Flare Coston2"
   }
 }

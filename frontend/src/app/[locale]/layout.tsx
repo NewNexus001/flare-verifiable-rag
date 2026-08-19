@@ -6,6 +6,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import { DiagnosticsPanel } from "@/components/DiagnosticsPanel";
 import { Header } from "@/components/Header";
 import { CopilotDrawer } from "@/components/CopilotDrawer";
+import { DashboardShell } from "@/components/DashboardShell";
 import { Providers } from "../providers";
 import { locales, type Locale } from "../../../i18n";
 import "../globals.css";
@@ -43,7 +44,9 @@ export default async function LocaleLayout({ children, params }: Props) {
           <ErrorBoundary>
             <Providers>
               <Header />
-              {children}
+              <DashboardShell>
+                {children}
+              </DashboardShell>
               <CopilotDrawer />
             </Providers>
           </ErrorBoundary>
