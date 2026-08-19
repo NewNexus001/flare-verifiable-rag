@@ -12,6 +12,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Palette, Plug, Save, ShieldAlert, Gauge } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 import {
   getCustomRpcUrl,
   getGasLimit,
@@ -117,6 +118,7 @@ export default function SettingsPage() {
   return (
     <main style={{ maxWidth: 760, margin: "0 auto", padding: "3rem 1.5rem 5rem" }}>
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+        <BackButton />
         <h1 style={{ margin: "0 0 0.4rem", fontSize: "1.8rem" }}>Settings</h1>
         <p style={{ margin: 0, color: "#9aa3bf", fontSize: "0.95rem" }}>
           Network, transaction and diagnostics preferences. Everything is stored locally in your browser.

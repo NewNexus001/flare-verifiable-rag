@@ -58,13 +58,20 @@ export function Header() {
     >
       <div style={{ display: "flex", alignItems: "center", gap: "0.7rem", minWidth: 0 }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/favicon.ico"
-          alt="Flare Verifiable RAG"
-          width={26}
-          height={26}
-          style={{ borderRadius: 7 }}
-        />
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+          aria-label="Reload page"
+        >
+          <img
+            src="/favicon.ico"
+            alt="Flare Verifiable RAG"
+            width={26}
+            height={26}
+            style={{ borderRadius: 7, display: "block" }}
+          />
+        </button>
         <div style={{ minWidth: 0 }}>
           <div style={{ fontWeight: 800, fontSize: "0.98rem", letterSpacing: "-0.01em", lineHeight: 1.1 }}>
             Flare Verifiable RAG

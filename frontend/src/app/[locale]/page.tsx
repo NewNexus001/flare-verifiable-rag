@@ -147,13 +147,18 @@ export default function Home() {
       }}
     >
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-        {/* Hero banner */}
+        {/* Hero banner — contained box, will become slideshow later */}
         <div
           style={{
             marginTop: "1.5rem",
             borderRadius: 20,
             overflow: "hidden",
             border: "1px solid #2a3150",
+            background: "rgba(255,255,255,0.02)",
+            padding: "1.5rem",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <img
@@ -161,9 +166,10 @@ export default function Home() {
             alt="Flare Ecosystem — Verifiable Knowledge Oracle architecture"
             style={{
               width: "100%",
+              maxWidth: 720,
               height: "auto",
               display: "block",
-              objectFit: "contain",
+              borderRadius: 12,
             }}
           />
         </div>

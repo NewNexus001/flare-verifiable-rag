@@ -11,6 +11,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink, User } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 import { useAccount } from "wagmi";
 import { shortAddress, useUserName } from "@/lib/user_profile";
 import { getEffectiveRpcUrl } from "@/lib/settings";
@@ -96,6 +97,7 @@ export default function ProfilePage() {
   if (!isConnected || !address) {
     return (
       <main style={{ maxWidth: 900, margin: "0 auto", padding: "3rem 1.5rem 5rem" }}>
+        <BackButton />
         <h1 style={{ fontSize: "1.8rem", margin: "0 0 0.5rem" }}>Profile</h1>
         <p style={{ color: "#9aa3bf" }}>
           Connect your wallet to see your on-chain identity, transaction history and
@@ -108,6 +110,7 @@ export default function ProfilePage() {
   return (
     <main style={{ maxWidth: 900, margin: "0 auto", padding: "3rem 1.5rem 5rem" }}>
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+        <BackButton />
         <h1 style={{ margin: "0 0 1.5rem", fontSize: "1.8rem" }}>Profile</h1>
 
         <div
