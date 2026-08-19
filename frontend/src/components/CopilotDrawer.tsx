@@ -18,6 +18,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Bot, CircleHelp, Copy, Rocket, Send, User, X } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -49,6 +50,7 @@ let msgId = 1;
 export function CopilotDrawer() {
   const { address, isConnected } = useAccount();
   const name = useUserName(address);
+  const t = useTranslations();
   const { sendTransactionAsync } = useSendTransaction();
 
   const [open, setOpen] = useState(false);
@@ -73,7 +75,7 @@ export function CopilotDrawer() {
         {
           id: msgId++,
           role: "assistant",
-          text: `Hey ${name} — I generate real Flare Data Connector and FTSO v2 artifacts for this repo. Ask me for an FDC selector, Solidity boilerplate, or the FTSO v2 feed ids.`,
+          text: t("copilot.welcome", { name }),
         },
       ]);
     }
@@ -464,7 +466,7 @@ export function CopilotDrawer() {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={`Ask for an FDC selector, ${name}…`}
+                placeholder={t("copilot.placeholder", { name })}
                 aria-label="Copilot question"
                 style={{
                   flex: 1,

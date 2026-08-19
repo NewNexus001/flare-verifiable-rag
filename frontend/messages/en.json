@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Flare Verifiable RAG",
-    "subtitle": "Verified AI Knowledge Oracle",
+    "subtitle": "Hardware-attested, on-chain settled, cryptographically provable answers.",
     "greeting": "Hi, {name}",
     "guest": "Guest"
   },
@@ -62,7 +62,9 @@
     "enterName": "Enter your name",
     "tierFree": "Free",
     "tierDeveloper": "Developer",
-    "tierEnterprise": "Enterprise"
+    "tierEnterprise": "Enterprise",
+    "connectWallet": "Connect Wallet",
+    "wrongNetwork": "Wrong network — switch to Coston2"
   },
   "upgrade": {
     "title": "Upgrade Plan",
@@ -120,5 +122,18 @@
     "title": "404 — Page Not Found",
     "message": "The resource you requested does not exist or has been moved.",
     "backHome": "Return to Dashboard"
+  },
+  "metrics": {
+    "liveMetrics": "Live metrics",
+    "feedUnavailable": "Feed unavailable (RPC/contract)",
+    "liveFromFtso": "live from FtsoV2",
+    "blockLatencyFeed": "Coston2 block-latency feed",
+    "checking": "Checking…",
+    "attested": "Attested",
+    "unreachable": "Unreachable",
+    "unconfigured": "Temporarily offline",
+    "vtpmClaims": "vTPM OIDC claims via blind proxy",
+    "teeAttestation": "TEE Attestation",
+    "selectLanguage": "Select language"
   }
 }

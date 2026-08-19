@@ -16,6 +16,7 @@
 import { motion } from "framer-motion";
 import { useAccount, useChainId } from "wagmi";
 import { flareTestnet } from "wagmi/chains";
+import { useTranslations } from "next-intl";
 import { Bot, ShieldCheck } from "lucide-react";
 import { ConnectWallet } from "@/components/ConnectWallet";
 import { AccountPopover } from "@/components/AccountPopover";
@@ -32,6 +33,7 @@ export function Header() {
   // Real chain state: wagmi v2 exposes the connected chain id via useChainId.
   // chainId 0 = no wallet connected — the app's home network is Coston2, so
   // that state renders the home chain name (never a bare "Chain 0").
+  const t = useTranslations();
   const isCoston2 = chainId === flareTestnet.id || chainId === 0;
   const networkLabel = isCoston2
     ? flareTestnet.name
@@ -68,7 +70,7 @@ export function Header() {
             Flare Verifiable RAG
           </div>
           <div style={{ color: "#9aa3bf", fontSize: "0.72rem" }}>
-            {isConnected ? `Hi, ${name}` : "Verified AI Knowledge Oracle"}
+            {isConnected ? t("app.greeting", { name }) : t("app.subtitle")}
           </div>
         </div>
       </div>
@@ -94,7 +96,7 @@ export function Header() {
             fontWeight: 600,
             cursor: "default",
           }}
-          title="Live network state"
+          title={t("header.network")}
         >
           <ShieldCheck size={14} />
           {networkLabel}
@@ -104,7 +106,7 @@ export function Header() {
           type="button"
           whileHover={{ scale: 1.02 }}
           onClick={() => window.dispatchEvent(new Event(OPEN_COPILOT_EVENT))}
-          aria-label="Open AI Copilot"
+          aria-label={t("header.copilotAria")}
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -120,7 +122,7 @@ export function Header() {
           }}
         >
           <Bot size={15} />
-          AI Copilot
+          {t("header.copilot")}
         </motion.button>
 
         <ConnectWallet />

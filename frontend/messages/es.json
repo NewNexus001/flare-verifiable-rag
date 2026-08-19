@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Flare RAG Verificable",
-    "subtitle": "Oracle de Conocimiento IA Verificado",
+    "subtitle": "Respuestas probadas criptográficamente, con attestación de hardware y liquidación on-chain.",
     "greeting": "Hola, {name}",
     "guest": "Invitado"
   },
@@ -62,7 +62,9 @@
     "enterName": "Ingrese su nombre",
     "tierFree": "Gratis",
     "tierDeveloper": "Desarrollador",
-    "tierEnterprise": "Empresarial"
+    "tierEnterprise": "Empresarial",
+    "connectWallet": "Conectar Monedero",
+    "wrongNetwork": "Red incorrecta — cambia a Coston2"
   },
   "upgrade": {
     "title": "Mejorar Plan",
@@ -120,5 +122,18 @@
     "title": "404 — Página No Encontrada",
     "message": "El recurso que solicitó no existe o ha sido movido.",
     "backHome": "Volver al Panel"
+  },
+  "metrics": {
+    "liveMetrics": "Métricas en vivo",
+    "feedUnavailable": "Feed no disponible (RPC/contrato)",
+    "liveFromFtso": "en vivo desde FtsoV2",
+    "blockLatencyFeed": "Feed de latencia de bloque Coston2",
+    "checking": "Verificando…",
+    "attested": "Atestiguado",
+    "unreachable": "Inalcanzable",
+    "unconfigured": "Temporalmente sin conexión",
+    "vtpmClaims": "Reclamaciones OIDC vTPM via proxy ciego",
+    "teeAttestation": "Atestación TEE",
+    "selectLanguage": "Seleccionar idioma"
   }
 }

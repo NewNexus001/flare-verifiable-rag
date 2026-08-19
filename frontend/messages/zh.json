@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Flare 可验证 RAG",
-    "subtitle": "已验证 AI 知识预言机",
+    "subtitle": "经硬件认证、链上结算、可密码学验证的答案。",
     "greeting": "你好，{name}",
     "guest": "访客"
   },
@@ -62,7 +62,9 @@
     "enterName": "输入您的名字",
     "tierFree": "免费",
     "tierDeveloper": "开发者",
-    "tierEnterprise": "企业版"
+    "tierEnterprise": "企业版",
+    "connectWallet": "连接钱包",
+    "wrongNetwork": "网络错误 — 请切换到 Coston2"
   },
   "upgrade": {
     "title": "升级计划",
@@ -120,5 +122,18 @@
     "title": "404 — 页面未找到",
     "message": "您请求的资源不存在或已被移动。",
     "backHome": "返回仪表板"
+  },
+  "metrics": {
+    "liveMetrics": "实时指标",
+    "feedUnavailable": "数据不可用 (RPC/合约)",
+    "liveFromFtso": "来自 FtsoV2 实时数据",
+    "blockLatencyFeed": "Coston2 区块延迟数据",
+    "checking": "检查中…",
+    "attested": "已认证",
+    "unreachable": "不可达",
+    "unconfigured": "暂时离线",
+    "vtpmClaims": "通过盲代理的 vTPM OIDC 声明",
+    "teeAttestation": "TEE 认证",
+    "selectLanguage": "选择语言"
   }
 }

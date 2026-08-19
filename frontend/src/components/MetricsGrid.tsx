@@ -13,11 +13,60 @@
  *    status. Honest states only.
  */
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Activity, Cpu } from "lucide-react";
 import { toFtsoFeedId } from "@/lib/copilot_engine";
 import { reportDiagnostic } from "@/lib/diagnostics";
 
 const PAIRS = ["XRP/USD", "BTC/USD", "ETH/USD"] as const;
+
+// Inline SVG currency icons (no external deps, no network calls)
+function CurrencyIcon({ symbol }: { symbol: string }) {
+  const s: React.CSSProperties = { width: 20, height: 20, borderRadius: "50%", flexShrink: 0 };
+  const t: React.CSSProperties = { fontSize: 9, fontWeight: 800, fill: "#fff", textAnchor: "middle", dominantBaseline: "central" };
+  switch (symbol) {
+    case "BTC":
+      return (
+        <svg viewBox="0 0 20 20" style={{ ...s, background: "#f7931a" }}>
+          <text x="10" y="10.5" style={t}>₿</text>
+        </svg>
+      );
+    case "ETH":
+      return (
+        <svg viewBox="0 0 20 20" style={{ ...s, background: "#627eea" }}>
+          <text x="10" y="10.5" style={t}>Ξ</text>
+        </svg>
+      );
+    case "XRP":
+      return (
+        <svg viewBox="0 0 20 20" style={{ ...s, background: "#23292f" }}>
+          <text x="10" y="10.5" style={{ ...t, fill: "#00aae4" }}>✕</text>
+        </svg>
+      );
+    case "USD":
+      return (
+        <svg viewBox="0 0 20 20" style={{ ...s, background: "#1a6e3f" }}>
+          <text x="10" y="10.5" style={t}>$</text>
+        </svg>
+      );
+    default:
+      return (
+        <svg viewBox="0 0 20 20" style={{ ...s, background: "#4a5568" }}>
+          <text x="10" y="10.5" style={t}>?</text>
+        </svg>
+      );
+  }
+}
+
+function PairIcons({ pair }: { pair: string }) {
+  const [base, quote] = pair.split("/");
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: -4 }}>
+      <CurrencyIcon symbol={base} />
+      <CurrencyIcon symbol={quote} />
+    </div>
+  );
+}
 
 const FTSO_ABI = [
   {
@@ -41,6 +90,7 @@ interface FeedTick {
 }
 
 function LivePriceRow({ pair }: { pair: string }) {
+  const t = useTranslations();
   const [tick, setTick] = useState<FeedTick | null>(null);
   const [error, setError] = useState(false);
 
@@ -98,7 +148,10 @@ function LivePriceRow({ pair }: { pair: string }) {
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ color: "#9aa3bf", fontSize: "0.78rem", fontWeight: 600 }}>{pair}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <PairIcons pair={pair} />
+          <span style={{ color: "#9aa3bf", fontSize: "0.78rem", fontWeight: 600 }}>{pair}</span>
+        </div>
         {tick?.live && (
           <span
             style={{
@@ -117,16 +170,17 @@ function LivePriceRow({ pair }: { pair: string }) {
       </div>
       <div style={{ color: "#6b7390", fontSize: "0.7rem", marginTop: "0.2rem" }}>
         {error
-          ? "Feed unavailable (RPC/contract)"
+          ? t("metrics.feedUnavailable")
           : tick
-            ? `live from FtsoV2 · ${tick.decimals} dp`
-            : "Coston2 block-latency feed"}
+            ? `${t("metrics.liveFromFtso")} · ${tick.decimals} dp`
+            : t("metrics.blockLatencyFeed")}
       </div>
     </div>
   );
 }
 
 export function MetricsGrid() {
+  const t = useTranslations();
   const [attestation, setAttestation] = useState<{ status?: string; swname?: string } | null>(null);
 
   useEffect(() => {
@@ -147,7 +201,7 @@ export function MetricsGrid() {
     <section aria-label="Live metrics">
       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
         <Activity size={16} style={{ color: "#4f6bff" }} />
-        <h2 style={{ margin: 0, fontSize: "1rem" }}>Live metrics</h2>
+        <h2 style={{ margin: 0, fontSize: "1rem" }}>{t("metrics.liveMetrics")}</h2>
       </div>
       <div
         style={{
@@ -171,19 +225,19 @@ export function MetricsGrid() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", color: "#9aa3bf", fontSize: "0.78rem", fontWeight: 600 }}>
-            <Cpu size={13} /> TEE Attestation
+            <Cpu size={13} /> {t("metrics.teeAttestation")}
           </div>
           <div style={{ fontSize: "0.95rem", fontWeight: 600, color: aStatus === "unconfigured" ? "#9aa3bf" : "#5fd38c" }}>
             {aStatus === "unconfigured"
-              ? "Temporarily offline"
-              : aStatus === "checking"
-                ? "Checking…"
+              ? t("metrics.unconfigured")
+              : aStatus === t("metrics.checking")
+                ? t("metrics.checking")
                 : aStatus === "unreachable"
-                  ? "Unreachable"
-                  : "Attested"}
+                  ? t("metrics.unreachable")
+                  : t("metrics.attested")}
           </div>
           <div style={{ color: "#6b7390", fontSize: "0.7rem" }}>
-            {attestation?.swname ?? "vTPM OIDC claims via blind proxy"}
+            {attestation?.swname ?? t("metrics.vtpmClaims")}
           </div>
         </div>
       </div>

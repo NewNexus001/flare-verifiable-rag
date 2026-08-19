@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "فلار RAG الموثّق",
-    "subtitle": "مركز معرفة الذكاء الاصطناعي الموثّق",
+    "subtitle": "إجابات موثقة ب加密学، مُصدّقة بأجهزة، ومُسوّة على السلسلة.",
     "greeting": "مرحباً، {name}",
     "guest": "زائر"
   },
@@ -62,7 +62,9 @@
     "enterName": "أدخل اسمك",
     "tierFree": "مجاني",
     "tierDeveloper": "مطور",
-    "tierEnterprise": "مؤسسي"
+    "tierEnterprise": "مؤسسي",
+    "connectWallet": "ربط المحفظة",
+    "wrongNetwork": "شبكة خاطئة — انتقل إلى Coston2"
   },
   "upgrade": {
     "title": "ترقية الخطة",
@@ -120,5 +122,18 @@
     "title": "404 — الصفحة غير موجودة",
     "message": "الموارد المطلوبة غير موجودة أو تم نقلها.",
     "backHome": "العودة إلى لوحة التحكم"
+  },
+  "metrics": {
+    "liveMetrics": "المؤشرات المباشرة",
+    "feedUnavailable": "التغذية غير متاحة (RPC/عقد)",
+    "liveFromFtso": "مباشر من FtsoV2",
+    "blockLatencyFeed": "تغذية كتلة Coston2",
+    "checking": "جاري التحقق…",
+    "attested": "مُصدّق",
+    "unreachable": "غير قابل للوصول",
+    "unconfigured": "غير متصل مؤقتاً",
+    "vtpmClaims": "مطالبات vTPM OIDC عبر الوكيل الأعمى",
+    "teeAttestation": "تصديق TEE",
+    "selectLanguage": "اختر اللغة"
   }
 }

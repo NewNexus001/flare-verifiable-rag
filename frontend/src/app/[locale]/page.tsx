@@ -15,6 +15,7 @@
  */
 import { useEffect, useState } from "react";
 import { useReadContract } from "wagmi";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Activity, Cpu, FileCheck2, Globe2 } from "lucide-react";
 import { SecureUploader } from "@/components/SecureUploader";
@@ -37,6 +38,7 @@ const VERIFIABLE_RAG_ABI = [
 ] as const;
 
 function LivePrice() {
+  const t = useTranslations();
   const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? "";
   const { data, isError, isLoading } = useReadContract({
     address: (contractAddress || undefined) as `0x${string}` | undefined,
@@ -46,9 +48,6 @@ function LivePrice() {
     query: { enabled: contractAddress.length > 0 },
   });
 
-  // Feed decimals are DYNAMIC per feed (FXRP/USD is 6dp on Coston2, verified
-  // live 2026-08-12) — read them live from FtsoV2 when the address is
-  // configured, never hardcoded into logic.
   const [decimals, setDecimals] = useState(6);
   useEffect(() => {
     const ftsoAddr = process.env.NEXT_PUBLIC_FTSO_V2_ADDRESS ?? "";
@@ -84,8 +83,6 @@ function LivePrice() {
         })) as readonly [bigint, number, bigint];
         setDecimals(Number(result[1]));
       } catch (err) {
-        // keep the verified default (6dp) — record for diagnostics, never
-        // surface raw errors in the UI
         reportDiagnostic("warn", "LivePrice", "FtsoV2 decimals read failed, keeping 6dp default", err instanceof Error ? err.message : String(err));
       }
     })();
@@ -94,11 +91,11 @@ function LivePrice() {
   if (!contractAddress) {
     return (
       <p style={{ color: "#6b7390", fontSize: "0.85rem" }}>
-        Live price feed unavailable — contract address not configured.
+        {t("dashboard.priceUnavailable")}
       </p>
     );
   }
-  if (isLoading) return <p style={{ color: "#9aa3bf" }}>Reading live feed…</p>;
+  if (isLoading) return <p style={{ color: "#9aa3bf" }}>{t("dashboard.priceLoading")}</p>;
   if (isError || data === undefined) {
     reportDiagnostic(
       "error",
@@ -106,7 +103,7 @@ function LivePrice() {
       "getRealtimePrice read failed (RPC or contract)",
       `contract=${contractAddress}`
     );
-    return <p style={{ color: "#9aa3bf" }}>Live price feed temporarily unavailable.</p>;
+    return <p style={{ color: "#9aa3bf" }}>{t("dashboard.priceError")}</p>;
   }
   const price = Number(data) / 10 ** decimals;
   return (
@@ -120,7 +117,26 @@ function LivePrice() {
 }
 
 export default function Home() {
+  const t = useTranslations();
   const [executionRecord, setExecutionRecord] = useState<ExecutionRecord | null>(null);
+
+  const cards = [
+    {
+      icon: <Cpu size={20} />,
+      title: t("dashboard.teeEnclave"),
+      body: t("dashboard.teeEnclaveDesc"),
+    },
+    {
+      icon: <FileCheck2 size={20} />,
+      title: t("dashboard.verifiedData"),
+      body: t("dashboard.verifiedDataDesc"),
+    },
+    {
+      icon: <Globe2 size={20} />,
+      title: t("dashboard.blindProxy"),
+      body: t("dashboard.blindProxyDesc"),
+    },
+  ];
 
   return (
     <main
@@ -154,10 +170,10 @@ export default function Home() {
 
         <div style={{ marginTop: "1.5rem" }}>
           <h1 style={{ margin: "0 0 0.35rem", fontSize: "1.7rem", letterSpacing: "-0.02em" }}>
-            Flare Verifiable RAG
+            {t("app.title")}
           </h1>
           <p style={{ margin: 0, color: "#9aa3bf", fontSize: "0.95rem" }}>
-            Hardware-attested, on-chain settled, cryptographically provable answers.
+            {t("app.subtitle")}
           </p>
         </div>
 
@@ -173,7 +189,7 @@ export default function Home() {
         >
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
             <Activity size={17} style={{ color: "#4f6bff" }} />
-            <span style={{ fontWeight: 600, fontSize: "0.95rem" }}>Live settlement feed</span>
+            <span style={{ fontWeight: 600, fontSize: "0.95rem" }}>{t("dashboard.liveSettlement")}</span>
           </div>
           <LivePrice />
         </section>
@@ -202,23 +218,7 @@ export default function Home() {
             marginTop: "1.5rem",
           }}
         >
-          {[
-            {
-              icon: <Cpu size={20} />,
-              title: "TEE Enclave",
-              body: "GCP Confidential Space (AMD SEV-SNP / Intel TDX) runs the deterministic Rust symbolic graph engine and mints halo2 proofs.",
-            },
-            {
-              icon: <FileCheck2 size={20} />,
-              title: "Verified Data",
-              body: "Web2 documents are attested by the Flare Data Connector; prices settle against the live FTSO v2 feed on Coston2.",
-            },
-            {
-              icon: <Globe2 size={20} />,
-              title: "Blind Proxy Client",
-              body: "Documents are AES-GCM-256 encrypted in the browser; the server relays only ciphertext to the enclave — never cached.",
-            },
-          ].map((card, i) => (
+          {cards.map((card, i) => (
             <motion.div
               key={card.title}
               initial={{ opacity: 0, y: 10 }}
@@ -257,8 +257,8 @@ export default function Home() {
             gap: "0.5rem",
           }}
         >
-          <span>Coston2 (chain 114) · Flare Network</span>
-          <span>All values are read live from the Flare Coston2 network.</span>
+          <span>{t("dashboard.footerChain")}</span>
+          <span>{t("dashboard.footerNote")}</span>
         </footer>
       </motion.div>
     </main>

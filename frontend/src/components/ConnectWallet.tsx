@@ -9,9 +9,11 @@
  * switch). Displays the connected Coston2 network and the short address.
  */
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useTranslations } from "next-intl";
 import { ChevronDown, ShieldCheck, Wallet } from "lucide-react";
 
 export function ConnectWallet() {
+  const t = useTranslations();
   return (
     <ConnectButton.Custom>
       {({ account, chain, mounted, openAccountModal, openChainModal, openConnectModal }) => {
@@ -40,7 +42,7 @@ export function ConnectWallet() {
                   boxShadow: "0 6px 24px rgba(79, 107, 255, 0.35)",
                 }}
               >
-                <Wallet size={17} /> Connect Wallet
+                <Wallet size={17} /> {t("popover.connectWallet", { defaultMessage: "Connect Wallet" })}
               </button>
             ) : chain.unsupported ? (
               <button
@@ -58,7 +60,7 @@ export function ConnectWallet() {
                   cursor: "pointer",
                 }}
               >
-                Wrong network — switch to Coston2
+                {t("popover.wrongNetwork", { defaultMessage: "Wrong network — switch to Coston2" })}
               </button>
             ) : (
               <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>

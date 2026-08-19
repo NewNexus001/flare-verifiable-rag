@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Flare 検証済み RAG",
-    "subtitle": "検証済み AI ナレッジオラクル",
+    "subtitle": "ハードウェア認証、オンチェーン決済、暗号学的に検証可能な回答。",
     "greeting": "こんにちは、{name}",
     "guest": "ゲスト"
   },
@@ -62,7 +62,9 @@
     "enterName": "名前を入力してください",
     "tierFree": "無料",
     "tierDeveloper": "開発者",
-    "tierEnterprise": "エンタープライズ"
+    "tierEnterprise": "エンタープライズ",
+    "connectWallet": "ウォレット接続",
+    "wrongNetwork": "ネットワークエラー — Coston2 に切替"
   },
   "upgrade": {
     "title": "プランアップグレード",
@@ -120,5 +122,18 @@
     "title": "404 — ページが見つかりません",
     "message": "リクエストされたリソースは存在しないか、移動されています。",
     "backHome": "ダッシュボードに戻る"
+  },
+  "metrics": {
+    "liveMetrics": "ライブ指標",
+    "feedUnavailable": "フィード利用不可 (RPC/コントラクト)",
+    "liveFromFtso": "FtsoV2 ライブ",
+    "blockLatencyFeed": "Coston2 ブロックレイテンシフィード",
+    "checking": "確認中…",
+    "attested": "アテステーション済み",
+    "unreachable": "到達不可",
+    "unconfigured": "一時的にオフライン",
+    "vtpmClaims": "ブラインドプロキシ経由 vTPM OIDC クレーム",
+    "teeAttestation": "TEE アテステーション",
+    "selectLanguage": "言語を選択"
   }
 }
