@@ -1,0 +1,71 @@
+[package]
+name = "indexer_rs"
+version = "0.1.0"
+edition = "2021"  # Blueprint-specified edition (fully supported on rustc 1.95)
+rust-version = "1.85"  # MSRV floor: keeps the deterministic build contract explicit
+
+# halo2_proofs pinned to 0.3 (2022-era Zcash line, crates.io max stable) on
+# purpose: the blueprint specifies this SNARK stack (ff 0.13 / pasta_curves 0.5).
+# The newer PSE-line API diverges - do NOT bump without updating the circuit code
+# and re-recording the container digest (.teedigest) in build-tee.yml.
+[dependencies]
+halo2_proofs = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+thiserror = "1.0"
+# ff 0.13 and rand_core 0.6 are the exact versions halo2_proofs 0.3.5
+# resolves to (verified against the vendored source) — direct pins keep the
+# Field trait bound and the prover RNG in lockstep with the ZK stack.
+ff = "0.13"
+rand_core = { version = "0.6", features = ["getrandom"] }
+# PyO3 C-FFI bridge to the Python enclave (Prompt 054). OPTIONAL and
+# feature-gated so the crate still builds/tests in pure Rust without a
+# Python interpreter. Resolved live against crates.io: 0.29.x. The
+# 'extension-module' feature is deliberately NOT enabled: maturin >= 1.9.4
+# injects PYO3_BUILD_EXTENSION_MODULE itself when building the wheel, and
+# extension-module would break cargo test (no libpython linking).
+pyo3 = { version = "0.29", optional = true, features = ["macros"] }
+
+[features]
+# Python bindings (src/ffi.rs). Enabling this requires a Python interpreter
+# on PATH at build time (pyo3 links against libpython).
+python = ["dep:pyo3"]
+
+# Zero-warning enforcement (Prompt 059, research-backed: Cargo reference,
+# Rust 1.74+): declaring lint levels in the manifest makes them part of
+# Cargo's fingerprint, so plain `cargo test`/`cargo build` FAIL on any rustc
+# warning. Structural — no fragile RUSTFLAGS env var, no dependency-tree
+# rebuild (RUSTFLAGS="-D warnings" would recompile every dep).
+[lints.rust]
+warnings = "deny"
+
+# Production release profile (Prompt 060, research-backed: Cargo book
+# Profiles page + production practice at Axiom/EZKL/Google-style teams):
+# cross-crate fat LTO + a single codegen unit maximize optimization and
+# make the emitted artifact deterministic — the whole point of the
+# digest-bound TEE pipeline. Builds are slower; that is the accepted cost.
+#
+# panic stays "unwind" (the default) ON PURPOSE: this library crosses the
+# PyO3/FFI boundary, where a panic must be intercepted by
+# std::panic::catch_unwind and converted into a Python exception.
+# panic="abort" would bypass catch_unwind and kill the entire host Python
+# process on any panic — a hard crash, not a catchable error.
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "unwind"
+
+# Criterion owns the bench harness main() - without harness=false Cargo would
+# run libtest instead and find 0 benchmarks.
+[[bench]]
+name = "trie_bench"
+harness = false
+
+[dev-dependencies]
+criterion = "0.5"
+# Dev-only independent reference oracle for digest_to_field: recomputes
+# SHA-256 -> big-endian 256-bit integer -> mod p with general big-integer
+# division, a code path entirely independent of the field's Horner
+# accumulation, so the byte-order contract is locked by two implementations.
+num-bigint = "0.4"

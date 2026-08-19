@@ -1,0 +1,137 @@
+# .github/workflows/build-tee.yml
+#
+# THE TEE LOCK-IN: deterministically builds the enclave container image and
+# records its exact SHA-256 digest. That digest becomes the input to the
+# Workload Identity Pool attribute condition (Confidential Space attestation):
+# only a container running THIS exact digest can acquire the TEE identity.
+#
+# All action versions were web-verified against their GitHub release tags on
+# 2026-08-04 and pinned by commit SHA (supply-chain hardening).
+name: Build TEE Enclave - Digest Lock-In
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write  # push the enclave image to GHCR (master-plan registry)
+
+concurrency:
+  group: tee-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-tee:
+    name: Build enclave + record SHA-256 digest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup pnpm (pinned 10.4.1)
+        uses: pnpm/action-setup@ff378ebe6b225b0680b81c1ad4498ae0d1d3a5e3 # v6.0.10 (SHA verified via GitHub API 2026-08-12)
+        with:
+          version: 10.4.1
+
+      - name: Setup Node 20
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies (frozen lockfile)
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Data integrity audit
+        run: bash .github/scripts/audit-data-integrity.sh
+
+      - name: Login to GitHub Container Registry (GHCR — master-plan registry)
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # GHCR requires lowercase repository names (owner 'NewNexus001' has
+      # uppercase) — compute the lowercased owner:repo at runtime.
+      - name: Compute lowercase GHCR repository
+        run: echo "GHCR_REPO=$(echo ${GITHUB_REPOSITORY} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+
+      - name: Build TEE enclave image (deterministic, no provenance)
+        id: build-enclave
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: ./enclave
+          push: true
+          no-cache: true
+          provenance: false
+          tags: ghcr.io/${{ env.GHCR_REPO }}/flare-verifiable-rag-enclave:${{ github.sha }}
+
+      - name: Record image digest to .teedigest
+        run: |
+          printf '%s\n' "${{ steps.build-enclave.outputs.digest }}" > .teedigest
+          echo "Recorded digest:"
+          cat .teedigest
+
+      - name: Upload digest artifact (WIP attestation input)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: enclave-digest
+          path: .teedigest
+          # .teedigest is a dotfile; upload-artifact v4+ excludes hidden files
+          # by default (verified in action.yml: include-hidden-files default false)
+          include-hidden-files: true
+          if-no-files-found: error
+
+  # Phase 12 (Prompt 237) — IETF RATS attestation-token artifact export.
+  #
+  # A real EAT can only be minted at RUNTIME on TEE hardware (Intel TDX /
+  # AMD SEV-SNP) — no CI runner has a TEE chip, and fabricating a token here
+  # would violate the zero-mock policy. What CI CAN export honestly is the
+  # tool that mints tokens on the TEE: this job builds the Phase 11-12 Rust
+  # gRPC core under Linux/musl, runs the full attestation test suite, and
+  # uploads tdx_attest_tool as a build artifact. On the Confidential VM,
+  # that same binary (shipped in the image) produces the real hardware EAT
+  # bound to the .teedigest recorded above.
+  attestation-tool:
+    name: Build + test Rust gRPC core (Phases 11-15)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Rust (pin stable toolchain)
+        uses: dtolnay/rust-toolchain@d8352f6b1d2e870bc5866fb688a001988bd57ca0 # stable (SHA verified 2026-08-15)
+
+      - name: Add musl target (static Linux binary)
+        run: rustup target add x86_64-unknown-linux-musl
+
+      # Phases 11-15 suite: EAT/COSE attestation (12), TDX emulator, gRPC +
+      # mTLS (11), KMS MPC wallet + RATS Passport E2E (13), zkTLS proxy + jq
+      # proof generation (14), and the FTSO provider node (15: calculator,
+      # loopback WebSocket reconnection/staleness, memory gate).
+      #
+      # The Phase 11 mTLS handshake binary is skipped (preserves the Phase
+      # 11-13 CI decision — its loopback TLS fixtures are the slowest in the
+      # suite and are exercised locally on every change). NOTE: this skip is
+      # targeted at the mTLS BINARY name, NOT the substring "tls" — the old
+      # `--skip tls` silently excluded the whole Phase 14 zkTLS suite (its
+      # test paths contain "tls") from CI.
+      - name: Run Phase 11-15 test suite
+        run: |
+          cd enclave/enclave_grpc
+          cargo test --all --target x86_64-unknown-linux-musl -- --skip test_mtls_handshake
+
+      - name: Build tdx_attest_tool (release, musl)
+        run: |
+          cd enclave/enclave_grpc
+          cargo build --release --target x86_64-unknown-linux-musl --bin tdx_attest_tool
+
+      - name: Upload attestation-tool artifact (mints EATs on the TEE)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: tdx-attest-tool
+          path: enclave/enclave_grpc/target/x86_64-unknown-linux-musl/release/tdx_attest_tool
+          if-no-files-found: error

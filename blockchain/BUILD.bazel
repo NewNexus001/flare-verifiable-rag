@@ -1,0 +1,49 @@
+# BUILD.bazel — blockchain domain (Solidity contracts).
+#
+# Phase 16 (Prompt 304): VerifiableRAG.sol and ZkTlsRelayer.sol are
+# compiled by the hermetic solc 0.8.24 rule (bazel/solc) — the EXACT
+# compiler + evm-version the Hardhat pipeline uses (see hardhat.config.ts),
+# so the Bazel artifact and the deployed artifact come from the same
+# compiler settings. Outputs: combined.json (ABI + bytecode + hashes).
+
+package(default_visibility = ["//visibility:public"])
+
+load("//bazel/solc:defs.bzl", "solc_contract")
+
+# OpenZeppelin library sources imported by the contracts (resolved through
+# node_modules under Hardhat; declared explicitly here for hermiticity).
+filegroup(
+    name = "openzeppelin",
+    srcs = glob(["node_modules/@openzeppelin/contracts/**/*.sol"]),
+)
+
+# Every contract + interface under contracts/ (the full source set the
+# compiler resolves; the same set Hardhat compiles).
+sol_contract_srcs = glob(["contracts/**/*.sol"])
+
+# Core settlement contract (deployed on Coston2: 0x403b...9897).
+solc_contract(
+    name = "VerifiableRAG",
+    srcs = sol_contract_srcs,
+    deps = [":openzeppelin"],
+    # Resolves `@openzeppelin/contracts/...` exactly as Hardhat does:
+    # node_modules sits at blockchain/node_modules in the source tree.
+    include_paths = ["blockchain/node_modules"],
+)
+
+# zkTLS proof relayer (Phase 14, Prompt 267).
+solc_contract(
+    name = "ZkTlsRelayer",
+    srcs = sol_contract_srcs,
+    deps = [":openzeppelin"],
+    include_paths = ["blockchain/node_modules"],
+)
+
+# Everything in this package (referenced by the root //:blockchain alias).
+filegroup(
+    name = "all",
+    srcs = [
+        ":VerifiableRAG",
+        ":ZkTlsRelayer",
+    ],
+)

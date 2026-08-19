@@ -1,0 +1,48 @@
+# skaffold.yaml — local developer loop (Phase 16, Prompts 307-309).
+#
+# Maps local source changes to builds and deploys the resulting images to
+# a local minikube cluster. `skaffold dev --trigger=manual` (Prompt 309)
+# watches for file changes and rebuilds + hot-swaps without manual
+# container rebuilds.
+#
+# The enclave image is built hermetically through the repo's Bazel target
+# (//enclave:image_tar) so the local loop exercises exactly the hermetic
+# engine CI runs. The frontend image uses its Dockerfile (standalone Next.js
+# output) — the same image the production pipeline ships.
+
+apiVersion: skaffold/v4beta14
+kind: Config
+metadata:
+  name: flare-verifiable-rag
+
+build:
+  artifacts:
+    - image: ghcr.io/flare-verifiable-rag/enclave-grpc
+      context: enclave
+      # Hermetic Bazel build of the distroless enclave image.
+      bazel:
+        target: //enclave:image_tar
+    - image: ghcr.io/flare-verifiable-rag/frontend
+      # Monorepo root context: frontend is a pnpm workspace member whose
+      # lockfile (pnpm-lock.yaml, pnpm-workspace.yaml) lives at the root.
+      context: .
+      docker:
+        dockerfile: frontend/Dockerfile
+      # Hot-reload (Prompt 308): sync frontend sources straight into the
+      # running pod without a rebuild; Rust/Solidity changes trigger a full
+      # Bazel rebuild (their outputs are compiled artifacts, not syncable
+      # sources).
+      sync:
+        manual:
+          - src: "frontend/src/**"
+            dest: "/app/src"
+            strip: 1
+
+  local:
+    push: false
+    useDockerCLI: false
+
+deploy:
+  kubectl:
+    remoteManifests:
+      - infra/k8s/*.yaml

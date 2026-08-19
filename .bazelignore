@@ -1,0 +1,13 @@
+# .bazelignore — directories Bazel must not descend into (Prompt 313).
+#
+# These are build outputs / vendored dependency trees managed by their own
+# toolchains (pnpm, cargo, next). Bazel would otherwise treat them as
+# packages and fail on their foreign configs.
+
+node_modules/
+.next/
+target/
+.turbo/
+.pnpm-store/
+dist/
+coverage/

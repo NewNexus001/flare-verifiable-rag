@@ -1,0 +1,24 @@
+# .bazelrc — common Bazel flags for the flare-verifiable-rag monorepo.
+#
+# Phase 16: hermetic polyglot build. Bzlmod is on by default (Bazel 7+);
+# the legacy WORKSPACE shim (rules_sol) is loaded with --enable_workspace.
+
+# WORKSPACE is legacy; keep it enabled ONLY for the rules_sol shim.
+common --enable_workspace=true
+
+# Sandboxed test execution with clear failure output. (Note: no global
+# --nofetch here — first-time repository resolution must be able to
+# download modules; hermiticity comes from sandboxed action execution.)
+test --test_output=errors
+
+# Keep the output base local and reproducible.
+common --disk_cache=~/.cache/bazel-disk
+
+# Show clean, actionable errors.
+common --color=yes
+common --show_timestamps
+
+# CI profile (Prompt 315): no interactive prompts, concise output.
+build:ci --noshow_progress
+build:ci --announce_rc
+build:ci --color=no

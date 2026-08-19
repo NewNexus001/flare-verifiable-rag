@@ -1,0 +1,42 @@
+# bazel/solc/BUILD.bazel — the hermetic solc 0.8.24 toolchain.
+
+package(default_visibility = ["//visibility:public"])
+
+toolchain_type(
+    name = "toolchain_type",
+)
+
+# The toolchain rule instance resolves the platform-specific pinned binary.
+load(":toolchain.bzl", "solc_toolchain")
+
+solc_toolchain(
+    name = "solc_linux_amd64",
+    solc = "@solc_0_8_24_linux_amd64//file",
+)
+
+solc_toolchain(
+    name = "solc_windows_amd64",
+    solc = "@solc_0_8_24_windows_amd64//file",
+)
+
+# One toolchain per platform; the binary comes from the repo rules in
+# repositories.bzl (solc_0_8_24_<platform>).
+toolchain(
+    name = "solc_toolchain_linux_amd64",
+    exec_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = ":solc_linux_amd64",
+    toolchain_type = ":toolchain_type",
+)
+
+toolchain(
+    name = "solc_toolchain_windows_amd64",
+    exec_compatible_with = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = ":solc_windows_amd64",
+    toolchain_type = ":toolchain_type",
+)

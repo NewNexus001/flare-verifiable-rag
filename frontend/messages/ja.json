@@ -1,0 +1,124 @@
+{
+  "app": {
+    "title": "Flare 検証済み RAG",
+    "subtitle": "検証済み AI ナレッジオラクル",
+    "greeting": "こんにちは、{name}",
+    "guest": "ゲスト"
+  },
+  "header": {
+    "copilot": "AI コパイロット",
+    "copilotAria": "AI コパイロットを開く",
+    "network": "ライブネットワーク状態"
+  },
+  "nav": {
+    "home": "ホーム",
+    "upgrade": "アップグレード",
+    "profile": "プロフィール",
+    "settings": "設定"
+  },
+  "dashboard": {
+    "liveSettlement": "ライブ決算フィード",
+    "priceUnavailable": "価格利用不可 — コントラクトアドレスが未設定。",
+    "priceLoading": "ライブフィードを読み込み中…",
+    "priceError": "価格フィードは一時的に利用できません。",
+    "teeEnclave": "TEE エンクレーブ",
+    "teeEnclaveDesc": "GCP 機密空間が決定論的 Rust シンボルグラフエンジンを実行し、halo2 証明を生成します。",
+    "verifiedData": "検証済みデータ",
+    "verifiedDataDesc": "Web2 ドキュメントは Flare データコネクタにより検証されます。価格は Coston2 の FTSO v2 フィードに対して決済されます。",
+    "blindProxy": "ブラインドプロキシクライアント",
+    "blindProxyDesc": "ドキュメントはブラウザ内で AES-GCM-256 で暗号化されます。サーバーは暗号化テキストのみをエンクレーブに転送します。",
+    "footerChain": "Coston2 (チェーン ID 114) · Flare ネットワーク",
+    "footerNote": "すべての値は Flare Coston2 ネットワークからライブで読み取られます。"
+  },
+  "attestation": {
+    "title": "ハードウェアアテステーション",
+    "status": "ステータス",
+    "swname": "swname",
+    "hardware": "ハードウェア",
+    "imageDigest": "イメージダイジェスト",
+    "attested": "アテステーション済み",
+    "unattested": "未アテステーション",
+    "unconfigured": "一時的にオフライン",
+    "unreachable": "到達不可",
+    "description": "ステータスはエンクレーブの vTPM OIDC クレームからサーバーサイドブラインドプロキシ経由で読み取られ、Coston2 にデプロイされた VerifiableRAG コントラクトと照合されます。",
+    "judgesNotice": "審査員の方：デプロイ詳細はこちら",
+    "noticeTitle": "デプロイメントのお知らせ",
+    "noticeBody": "ハードウェアアテステーションサービスには Intel TDX ハードウェアを備えた Google Cloud 機密空間が必要で、月額約 300 ドル（約 500,000 NGN）のコストがかかります。現在オフラインですが、完全なアーキテクチャはコードベースで検証済みです。",
+    "iUnderstand": "了解しました"
+  },
+  "popover": {
+    "upgradePlan": "プランアップグレード",
+    "personalization": "パーソナライゼーション",
+    "profile": "プロフィール",
+    "settings": "設定",
+    "help": "ヘルプ",
+    "helpArchitecture": "アーキテクチャドキュメント",
+    "helpFaucet": "Flare Coston2 フォーセット",
+    "helpSupport": "サポートチャネル",
+    "disconnect": "ウォレット切断",
+    "editName": "編集",
+    "saveName": "保存",
+    "cancelName": "キャンセル",
+    "enterName": "名前を入力してください",
+    "tierFree": "無料",
+    "tierDeveloper": "開発者",
+    "tierEnterprise": "エンタープライズ"
+  },
+  "upgrade": {
+    "title": "プランアップグレード",
+    "free": "無料プラン",
+    "freePrice": "$0",
+    "freeDesc": "Flare Verifiable RAG オラクルへの基本アクセス。",
+    "developer": "開発者プラン",
+    "developerPrice": "$29/月",
+    "developerDesc": "優先アクセス、高いクエリ制限、APIキー。",
+    "enterprise": "エンタープライズ",
+    "enterprisePrice": "$299/月",
+    "enterpriseDesc": "完全な TEE アテステーション、カスタム SLA、専任サポート。",
+    "currentPlan": "現在のプラン",
+    "upgradeTo": "{plan} にアップグレード",
+    "comingSoon": "近日公開 — スマートコントラクトによる Web3 サブスクリプション。"
+  },
+  "profile": {
+    "title": "プロフィール",
+    "walletAddress": "ウォレットアドレス",
+    "transactionHistory": "Coston2 の取引履歴",
+    "attestationRecords": "ハードウェアアテステーション記録",
+    "noWallet": "ウォレットを接続してプロフィールを表示。",
+    "noTransactions": "まだ取引がありません。",
+    "noAttestation": "アテステーション記録がまだありません。"
+  },
+  "settings": {
+    "title": "設定",
+    "rpcUrl": "カスタム RPC URL",
+    "gasLimit": "Gas 制限",
+    "sentryLogging": "Sentry エラーログ",
+    "sentryDesc": "Sentry ダッシュボードへのクラッシュレポートを有効化。",
+    "testConnection": "接続テスト",
+    "save": "設定を保存",
+    "connectionOk": "接続成功",
+    "connectionFail": "接続失敗"
+  },
+  "copilot": {
+    "title": "AI 開発者コパイロット",
+    "placeholder": "FDC セレクターについて質問、{name}…",
+    "welcome": "こんにちは {name}、FDC セレクター、FTSO 価格、Solidity ボイラープレートについてお聞きください。",
+    "help": "ヘルプ",
+    "deploy": "ワンクリックデプロイ",
+    "copy": "コピー",
+    "copied": "コピー済み！",
+    "thinking": "考え中…",
+    "emptyState": "FDC Web2Json、FTSO v2 価格、スマートコントラクトについてお聞きください。",
+    "helpTitle": "コパイロットヘルプ",
+    "helpDesc": "Flare 統合について質問してください。すべての処理はローカルの Web Worker で実行されます — AI API はなく、データはブラウザから出ません。"
+  },
+  "honeypot": {
+    "title": "アクセス拒否",
+    "message": "リクエストされたリソースが見つかりませんでした。"
+  },
+  "notFound": {
+    "title": "404 — ページが見つかりません",
+    "message": "リクエストされたリソースは存在しないか、移動されています。",
+    "backHome": "ダッシュボードに戻る"
+  }
+}

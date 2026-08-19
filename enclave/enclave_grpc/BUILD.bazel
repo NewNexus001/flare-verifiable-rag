@@ -1,0 +1,97 @@
+# BUILD.bazel — enclave_grpc crate package.
+#
+# Phase 16 (Prompt 303): the enclave's `main_grpc` binary is built with
+# rules_rust. The crate's dependencies are declared through crate_universe
+# (cargo-bazel), which derives a hermetic Bazel dependency graph from the
+# existing Cargo.toml/Cargo.lock — the same source of truth `cargo` uses,
+# so there is exactly one dependency definition, never a divergent mirror.
+#
+# NOTE on platform compatibility: rules_rust links binaries through the
+# Bazel C/C++ toolchain, which on Windows means MSVC/Visual Studio. This
+# developer machine has no C compiler installed (its Rust toolchain links
+# with the bundled rust-lld), so the hermetic Rust targets are restricted
+# to Linux where the CC toolchain is automatic and the hermetic build
+# runs in CI. On Windows the enclave builds the normal way (cargo build;
+# 84/84 tests green, main_grpc.exe runs).
+
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_library")
+
+LINUX_ONLY = ["@platforms//os:linux"]
+
+# The enclave library crate (src/lib.rs). The build script compiles the
+# proto via tonic_build; crate_universe handles the vendored protoc dep.
+rust_library(
+    name = "enclave_grpc_lib",
+    srcs = glob(["src/**/*.rs"]),
+    crate_root = "src/lib.rs",
+    edition = "2021",
+    target_compatible_with = LINUX_ONLY,
+    deps = [
+        "@crates//:ciborium",
+        "@crates//:futures",
+        "@crates//:hex",
+        # Crate target names use the Cargo package name (hyphenated),
+        # e.g. tokio-stream — verified against the generated crates repo.
+        "@crates//:hickory-resolver",
+        "@crates//:prometheus",
+        "@crates//:prost",
+        "@crates//:rustls",
+        "@crates//:rustls-pemfile",
+        "@crates//:sentry",
+        "@crates//:serde_json",
+        "@crates//:sha2",
+        "@crates//:tokio",
+        "@crates//:tokio-rustls",
+        "@crates//:tokio-stream",
+        "@crates//:tokio-tungstenite",
+        "@crates//:tonic",
+        "@crates//:tonic-health",
+        "@crates//:tower",
+        "@crates//:tracing",
+        "@crates//:url",
+        "@crates//:zeroize",
+    ],
+)
+
+# The main gRPC server binary (Prompt 201: main_grpc).
+rust_binary(
+    name = "main_grpc",
+    srcs = ["src/main_grpc.rs"],
+    crate_root = "src/main_grpc.rs",
+    edition = "2021",
+    deps = [":enclave_grpc_lib"],
+    target_compatible_with = LINUX_ONLY,
+)
+
+# CLI tooling (Prompt 216 client_cli, Prompt 232 tdx_attest_tool).
+rust_binary(
+    name = "client_cli",
+    srcs = ["src/bin/client_cli.rs"],
+    crate_root = "src/bin/client_cli.rs",
+    edition = "2021",
+    deps = [":enclave_grpc_lib"],
+    target_compatible_with = LINUX_ONLY,
+)
+
+rust_binary(
+    name = "tdx_attest_tool",
+    srcs = ["src/bin/tdx_attest_tool.rs"],
+    crate_root = "src/bin/tdx_attest_tool.rs",
+    edition = "2021",
+    deps = [":enclave_grpc_lib"],
+    target_compatible_with = LINUX_ONLY,
+)
+
+# Everything in this package.
+filegroup(
+    name = "all",
+    srcs = [
+        ":main_grpc",
+        ":client_cli",
+        ":tdx_attest_tool",
+        ":enclave_grpc_lib",
+    ],
+    target_compatible_with = LINUX_ONLY,
+)

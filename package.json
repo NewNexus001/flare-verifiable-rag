@@ -1,0 +1,22 @@
+{
+  "name": "flare-verifiable-rag",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Verifiable RAG AI Agent for the Flare Summer Signal Hackathon (Track 2: Confidential Compute). Monorepo: frontend (Next.js), blockchain (Solidity), enclave (Python/FastAPI), infra (Terraform).",
+  "packageManager": "pnpm@10.4.1",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "dev": "turbo run dev",
+    "enclave:build": "docker build --no-cache --pull -t flare-verifiable-rag/enclave:dev ./enclave",
+    "infra:init": "terraform -chdir=infra/terraform init",
+    "infra:plan": "terraform -chdir=infra/terraform plan",
+    "infra:apply": "terraform -chdir=infra/terraform apply"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0"
+  }
+}

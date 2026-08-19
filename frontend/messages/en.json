@@ -1,0 +1,124 @@
+{
+  "app": {
+    "title": "Flare Verifiable RAG",
+    "subtitle": "Verified AI Knowledge Oracle",
+    "greeting": "Hi, {name}",
+    "guest": "Guest"
+  },
+  "header": {
+    "copilot": "AI Copilot",
+    "copilotAria": "Open AI Copilot",
+    "network": "Live network state"
+  },
+  "nav": {
+    "home": "Home",
+    "upgrade": "Upgrade",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "liveSettlement": "Live settlement feed",
+    "priceUnavailable": "Live price feed unavailable — contract address not configured.",
+    "priceLoading": "Reading live feed…",
+    "priceError": "Live price feed temporarily unavailable.",
+    "teeEnclave": "TEE Enclave",
+    "teeEnclaveDesc": "GCP Confidential Space (AMD SEV-SNP / Intel TDX) runs the deterministic Rust symbolic graph engine and mints halo2 proofs.",
+    "verifiedData": "Verified Data",
+    "verifiedDataDesc": "Web2 documents are attested by the Flare Data Connector; prices settle against the live FTSO v2 feed on Coston2.",
+    "blindProxy": "Blind Proxy Client",
+    "blindProxyDesc": "Documents are AES-GCM-256 encrypted in the browser; the server relays only ciphertext to the enclave — never cached.",
+    "footerChain": "Coston2 (chain 114) · Flare Network",
+    "footerNote": "All values are read live from the Flare Coston2 network."
+  },
+  "attestation": {
+    "title": "Hardware Attestation",
+    "status": "Status",
+    "swname": "swname",
+    "hardware": "Hardware",
+    "imageDigest": "Image digest",
+    "attested": "Attested",
+    "unattested": "Unattested",
+    "unconfigured": "Temporarily offline",
+    "unreachable": "Unreachable",
+    "description": "Status is read from the enclave vTPM OIDC claims through the server-side blind proxy and cross-checked against the deployed VerifiableRAG contract on Coston2.",
+    "judgesNotice": "Judges: Click here for deployment details",
+    "noticeTitle": "Deployment Notice",
+    "noticeBody": "The hardware attestation service requires Google Cloud Confidential Space with Intel TDX hardware, which costs approximately $300/month (~500,000 NGN). This is currently offline but the full architecture is proven in the codebase. The system falls back to honest 503 responses rather than fabricating attestation data.",
+    "iUnderstand": "I understand"
+  },
+  "popover": {
+    "upgradePlan": "Upgrade Plan",
+    "personalization": "Personalization",
+    "profile": "Profile",
+    "settings": "Settings",
+    "help": "Help",
+    "helpArchitecture": "Architecture Documentation",
+    "helpFaucet": "Flare Coston2 Faucet",
+    "helpSupport": "Support Channels",
+    "disconnect": "Disconnect Wallet",
+    "editName": "Edit",
+    "saveName": "Save",
+    "cancelName": "Cancel",
+    "enterName": "Enter your name",
+    "tierFree": "Free",
+    "tierDeveloper": "Developer",
+    "tierEnterprise": "Enterprise"
+  },
+  "upgrade": {
+    "title": "Upgrade Plan",
+    "free": "Free",
+    "freePrice": "$0",
+    "freeDesc": "Basic access to the Flare Verifiable RAG oracle.",
+    "developer": "Developer",
+    "developerPrice": "$29/mo",
+    "developerDesc": "Priority access, higher query limits, and API keys.",
+    "enterprise": "Enterprise",
+    "enterprisePrice": "$299/mo",
+    "enterpriseDesc": "Full TEE attestation, custom SLA, and dedicated support.",
+    "currentPlan": "Current Plan",
+    "upgradeTo": "Upgrade to {plan}",
+    "comingSoon": "Coming soon — Web3 subscription via smart contract."
+  },
+  "profile": {
+    "title": "Profile",
+    "walletAddress": "Wallet Address",
+    "transactionHistory": "Transaction History on Coston2",
+    "attestationRecords": "Hardware Attestation Records",
+    "noWallet": "Connect your wallet to view your profile.",
+    "noTransactions": "No transactions yet.",
+    "noAttestation": "No attestation records yet."
+  },
+  "settings": {
+    "title": "Settings",
+    "rpcUrl": "Custom RPC URL",
+    "gasLimit": "Gas Limit",
+    "sentryLogging": "Sentry Error Logging",
+    "sentryDesc": "Enable crash reporting to Sentry dashboard.",
+    "testConnection": "Test Connection",
+    "save": "Save Settings",
+    "connectionOk": "Connection successful",
+    "connectionFail": "Connection failed"
+  },
+  "copilot": {
+    "title": "AI Developer Copilot",
+    "placeholder": "Ask for an FDC selector, {name}…",
+    "welcome": "Hey {name}, ask me about FDC selectors, FTSO pricing, or Solidity boilerplate.",
+    "help": "Help",
+    "deploy": "One-Click Deploy",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "thinking": "Thinking…",
+    "emptyState": "Ask me about FDC Web2Json, FTSO v2 pricing, or smart contracts.",
+    "helpTitle": "Copilot Help",
+    "helpDesc": "Ask questions about Flare integrations. All processing happens locally in a Web Worker — no AI API, nothing leaves your browser."
+  },
+  "honeypot": {
+    "title": "Access Denied",
+    "message": "The requested resource was not found."
+  },
+  "notFound": {
+    "title": "404 — Page Not Found",
+    "message": "The resource you requested does not exist or has been moved.",
+    "backHome": "Return to Dashboard"
+  }
+}

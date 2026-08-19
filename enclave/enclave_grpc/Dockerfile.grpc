@@ -1,0 +1,58 @@
+# enclave/enclave_grpc/Dockerfile.grpc
+#
+# Phase 11 (Prompt 213) — hermetic musl release build of the Rust gRPC core.
+#
+# NOTE (honest deviation): this is a SEPARATE Dockerfile (Dockerfile.grpc),
+# not an edit of enclave/Dockerfile — the existing file builds the Python
+# enclave image that is the LIVE backend; overwriting it would break that
+# pipeline. The gRPC core ships as its own minimal image.
+#
+# Stage 1: clux/muslrust — statically linked musl release binary (no glibc,
+# no libc.so dependency at runtime → distroless-compatible).
+# Tag verified on Docker Hub 2026-08-15: 1.97.1-stable is the current
+# stable toolchain (1.85.0 was never published; latest is unpinned).
+FROM clux/muslrust:1.97.1-stable AS builder
+
+WORKDIR /build
+
+# Layer-cache friendly: manifest + lock first, sources after. benches is
+# included because Cargo.toml declares [[bench]] zktls_bench — without it
+# cargo refuses to parse the manifest (exit 101, found during the Phase 16
+# local image build).
+COPY Cargo.toml Cargo.lock ./
+COPY build.rs ./
+COPY proto ./proto
+COPY src ./src
+COPY benches ./benches
+
+# Strip debug symbols at link time: keeps the distroless image under the
+# 25 MB bar (Prompt 214) — measured 28.7 MB unstripped, ~11 MB stripped.
+ENV RUSTFLAGS="-C strip=symbols"
+
+# Static musl release build (the clux/muslrust default target). BuildKit
+# cache mounts persist the cargo registry + build target across rebuilds, so
+# iterating on the Rust source does not recompile the dependency tree. The
+# binaries are copied out of the cache mount to /build/bin (a real layer
+# path) because cache mounts are NOT part of image layers and would be
+# invisible to the COPY in stage 2.
+RUN --mount=type=cache,target=/root/.cargo/registry \
+    --mount=type=cache,target=/root/.cargo/git \
+    --mount=type=cache,target=/build/target \
+    cargo build --release --bin main_grpc --bin client_cli --bin tdx_attest_tool \
+    && mkdir -p /build/bin \
+    && cp /build/target/x86_64-unknown-linux-musl/release/main_grpc /build/bin/ \
+    && cp /build/target/x86_64-unknown-linux-musl/release/client_cli /build/bin/ \
+    && cp /build/target/x86_64-unknown-linux-musl/release/tdx_attest_tool /build/bin/
+
+# Stage 2: minimal distroless runtime — static binary, non-root.
+FROM gcr.io/distroless/static-debian12:nonroot
+
+COPY --from=builder /build/bin/main_grpc /usr/local/bin/main_grpc
+COPY --from=builder /build/bin/client_cli /usr/local/bin/client_cli
+COPY --from=builder /build/bin/tdx_attest_tool /usr/local/bin/tdx_attest_tool
+
+# gRPC default port.
+EXPOSE 50051
+
+# Exec-form entrypoint: SIGTERM reaches the tokio runtime for graceful drain.
+ENTRYPOINT ["/usr/local/bin/main_grpc"]

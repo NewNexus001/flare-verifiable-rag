@@ -1,0 +1,105 @@
+# enclave/enclave_grpc/Cargo.toml
+#
+# Phase 11 (Prompt 201) — Tokio Async Rust gRPC Enclave Core.
+# Versions pinned per the master plan spec (era-matched to the repo's
+# existing pins, e.g. halo2_proofs 0.3.5 / wagmi 2.5.11):
+#   tokio 1.36 (features = full) · tonic 0.10 · prost 0.12 · tower 0.4 ·
+#   rustls 0.21 (+ tokio-rustls 0.24, the exact pairing for rustls 0.21)
+# Verified against crates.io pairing docs: tonic 0.10.x is built on
+# prost 0.12.x, and tonic-health 0.10.x implements grpc.health.v1.
+
+[package]
+name = "enclave_grpc"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+description = "Tokio async gRPC enclave core for the Flare Verifiable RAG platform"
+
+[dependencies]
+tokio = { version = "1.36", features = ["full"] }
+tonic = "0.10"
+prost = "0.12"
+tower = "0.4"
+rustls = { version = "0.21", features = ["dangerous_configuration"] }
+tokio-rustls = "0.24"
+rustls-pemfile = "1.0"
+tokio-stream = { version = "0.1", features = ["net"] }
+futures = "0.3"
+tonic-health = "0.10"
+sentry = { version = "0.32", default-features = false, features = ["backtrace", "panic"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["json"] }
+rand_core = { version = "0.6", features = ["getrandom"] }
+# Phase 12 — IETF RATS EAT (RFC 9334) / COSE-Sign1 (RFC 9052):
+ciborium = "0.2"
+p256 = { version = "0.13", features = ["ecdsa"] }
+sha2 = "0.10"
+hex = "0.4"
+zeroize = { version = "1.7", features = ["zeroize_derive"] }
+libc = "0.2"
+# --- Phase 13 — GCP Cloud KMS MPC wallet (Prompts 241-244) ---
+# secp256k1 (Ethereum's curve). k256 0.13 reuses the elliptic-curve 0.13.8
+# already resolved for p256 0.13 (no duplicate crypto tree).
+k256 = "0.13"
+# RLP encoding for EIP-1559 transaction envelopes (rlp 0.6, paritytech).
+rlp = "0.6"
+# Keccak-256 (Ethereum hashing), sha3 0.10 line.
+sha3 = "0.10"
+# KMS client transport: hyper 0.14 (already resolved for tonic 0.10) + the
+# matching hyper-rustls 0.24 (rustls 0.21 connector, also in-tree). The KMS
+# REST surface (cloudkms.googleapis.com/v1) is a first-class documented GCP
+# API with the same IAM auth as its gRPC surface — see kms/client.rs for the
+# honest deviation note on why REST is used here instead of the official
+# google-cloud-kms-v1 crate (which would pull a second tonic + the full gax
+# tree — impractical on constrained build hosts; swappable in CI).
+hyper = { version = "0.14", features = ["client", "http1", "tcp", "server"] }
+hyper-rustls = "0.24"
+# Official Prometheus Rust client — powers the /metrics endpoint (P293).
+prometheus = "0.14"
+# URL parsing for the exchange connectors (already in-tree via tungstenite).
+url = "2.5"
+http = "0.2"
+base64 = "0.21"
+# --- Phase 14 — TEE zkTLS proxy (Prompts 261-265) ---
+# webpki-roots 0.25: the EXACT pairing rustls 0.21.12 itself pins in its
+# dev-dependencies (verified against its Cargo.toml) — the Mozilla root
+# bundle as rustls-webpki TrustAnchors.
+webpki-roots = "0.25"
+# jaq-all 0.3: the professional jq engine for Rust (jaq-core + jaq-std +
+# jaq-json + jaq-fmts) — the SAME jq semantics the Flare FDC attestor
+# network runs for Web2Json postProcessJq filters (real selectors like
+# ".completed", never a hand-rolled subset).
+jaq-all = "0.3"
+serde_json = "1.0"
+tokio-tungstenite = { version = "0.20.1", features = ["rustls-tls-webpki-roots"] }
+hickory-resolver = { version = "0.24", features = ["dns-over-https-rustls"] }
+# tonic 0.10 TLS is client-only; the mTLS SERVER is built on tokio-rustls.
+
+[build-dependencies]
+tonic-build = "0.10"
+# Bundles the official protoc binary so the build is hermetic on hosts
+# without protoc installed (verified on this Windows host: no protoc).
+protoc-bin-vendored = "3"
+
+[dev-dependencies]
+rcgen = "0.11"
+tokio-rustls = "0.24"
+base64 = "0.21"
+criterion = { version = "0.5", default-features = false, features = ["cargo_bench_support"] }
+memory-stats = "1.2"
+
+[[bench]]
+name = "zktls_bench"
+harness = false
+
+[[bin]]
+name = "main_grpc"
+path = "src/main_grpc.rs"
+
+[[bin]]
+name = "client_cli"
+path = "src/bin/client_cli.rs"
+
+[[bin]]
+name = "tdx_attest_tool"
+path = "src/bin/tdx_attest_tool.rs"

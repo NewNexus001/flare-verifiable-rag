@@ -1,0 +1,124 @@
+{
+  "app": {
+    "title": "فلار RAG الموثّق",
+    "subtitle": "مركز معرفة الذكاء الاصطناعي الموثّق",
+    "greeting": "مرحباً، {name}",
+    "guest": "زائر"
+  },
+  "header": {
+    "copilot": "مساعد الذكاء الاصطناعي",
+    "copilotAria": "فتح مساعد الذكاء الاصطناعي",
+    "network": "حالة الشبكة المباشرة"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "upgrade": "ترقية",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات"
+  },
+  "dashboard": {
+    "liveSettlement": "تغذية التسوية المباشرة",
+    "priceUnavailable": "السعر غير متاح — عنوان العقد غير مُعد.",
+    "priceLoading": "جاري قراءة التغذية المباشرة…",
+    "priceError": "تغذية الأسعار غير متاحة مؤقتاً.",
+    "teeEnclave": "حصن TEE",
+    "teeEnclaveDesc": "مساحة GCP السرية تشغيل محرك الرموز البصرية Rust الحتمي وتولّد براهين halo2.",
+    "verifiedData": "بيانات موثّقة",
+    "verifiedDataDesc": "مستندات Web2 موثّقة عبر موصل بيانات Flare؛ الأسعار تُسوّى مقابل تغذية FTSO v2 المباشرة على Coston2.",
+    "blindProxy": "عميل الوكيل الأعمى",
+    "blindProxyDesc": "المستندات مشفرة بـ AES-GCM-256 في المتصفح؛ الخادم يُرسل فقط النص المشفر إلى الحصن — لا يتم التخزين المؤقت أبداً.",
+    "footerChain": "Coston2 (سلسلة 114) · شبكة Flare",
+    "footerNote": "جميع القيم تُقرأ مباشرة من شبكة Flare Coston2."
+  },
+  "attestation": {
+    "title": "تصديق الأجهزة",
+    "status": "الحالة",
+    "swname": "swname",
+    "hardware": "الأجهزة",
+    "imageDigest": "ملخص الصورة",
+    "attested": "مُصدّق",
+    "unattested": "غير مُصدّق",
+    "unconfigured": "غير متصل مؤقتاً",
+    "unreachable": "غير قابل للوصول",
+    "description": "الحالة تُقرأ من مطالبات vTPM OIDC في الحصن عبر الوكيل الأعمى من جانب الخادم، وتُقارن مع عقد VerifiableRAG المُنشر على Coston2.",
+    "judgesNotice": "القضاة: اضغط هنا لتفاصيل النشر",
+    "noticeTitle": "إشعار النشر",
+    "noticeBody": "خدمة تصديق الأجهزة تتطلب Google Cloud Confidential Space مع أجهزة Intel TDX، بتكلفة حوالي 300 دولار شهرياً (~500,000 نaira). حالياً غير متصل لكن الهيكل الكامل مُثبت في قاعدة الكود.",
+    "iUnderstand": "أفهم"
+  },
+  "popover": {
+    "upgradePlan": "ترقية الخطة",
+    "personalization": "التخصيص",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "help": "مساعدة",
+    "helpArchitecture": "توثيق الهيكل",
+    "helpFaucet": "صنبور Flare Coston2",
+    "helpSupport": "قنوات الدعم",
+    "disconnect": "فصل المحفظة",
+    "editName": "تعديل",
+    "saveName": "حفظ",
+    "cancelName": "إلغاء",
+    "enterName": "أدخل اسمك",
+    "tierFree": "مجاني",
+    "tierDeveloper": "مطور",
+    "tierEnterprise": "مؤسسي"
+  },
+  "upgrade": {
+    "title": "ترقية الخطة",
+    "free": "مجاني",
+    "freePrice": "$0",
+    "freeDesc": "الوصول الأساسي إلى مركز معرفة Flare الموثّق.",
+    "developer": "مطور",
+    "developerPrice": "$29/شهر",
+    "developerDesc": "وصول أولوي، حدود استعلام أعلى، ومفاتيح API.",
+    "enterprise": "مؤسسي",
+    "enterprisePrice": "$299/شهر",
+    "enterpriseDesc": "تصديق TEE كامل، اتفاقية مستوى الخدمة مخصصة، ودعم مخصص.",
+    "currentPlan": "الخطة الحالية",
+    "upgradeTo": "ترقية إلى {plan}",
+    "comingSoon": "قريباً — اشتراك Web3 عبر العقد الذكي."
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "walletAddress": "عنوان المحفظة",
+    "transactionHistory": "سجل المعاملات على Coston2",
+    "attestationRecords": "سجلات تصديق الأجهزة",
+    "noWallet": "اتصل بمحفظتك لعرض ملفك الشخصي.",
+    "noTransactions": "لا توجد معاملات بعد.",
+    "noAttestation": "لا توجد سجلات تصديق بعد."
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "rpcUrl": "عنوان RPC مخصص",
+    "gasLimit": "حد الغاز",
+    "sentryLogging": "سجل أخطاء Sentry",
+    "sentryDesc": "تفعيل الإبلاغ عن الأخطاء إلى لوحة Sentry.",
+    "testConnection": "اختبار الاتصال",
+    "save": "حفظ الإعدادات",
+    "connectionOk": "نجح الاتصال",
+    "connectionFail": "فشل الاتصال"
+  },
+  "copilot": {
+    "title": "مساعد المطور بالذكاء الاصطناعي",
+    "placeholder": "اسأل عن محدد FDC، {name}…",
+    "welcome": "مرحباً {name}، اسألني عن محددات FDC أو أسعار FTSO أو قالب Solidity.",
+    "help": "مساعدة",
+    "deploy": "نشر بنقرة واحدة",
+    "copy": "نسخ",
+    "copied": "تم النسخ!",
+    "thinking": "جاري التفكير…",
+    "emptyState": "اسألني عن FDC Web2Json أو أسعار FTSO v2 أو العقود الذكية.",
+    "helpTitle": "مساعدة المساعد",
+    "helpDesc": "اسأل عن تكاملات Flare. جميع المعالجات تتم محلياً في Web Worker — لا ذكاء اصطناعي API، لا شيء يغادر متصفحك."
+  },
+  "honeypot": {
+    "title": "تم رفض الوصول",
+    "message": "الموارد المطلوبة غير موجودة."
+  },
+  "notFound": {
+    "title": "404 — الصفحة غير موجودة",
+    "message": "الموارد المطلوبة غير موجودة أو تم نقلها.",
+    "backHome": "العودة إلى لوحة التحكم"
+  }
+}

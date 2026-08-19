@@ -1,0 +1,20 @@
+# Flare Verifiable RAG - pnpm workspace map
+#
+# Only Node.js packages are pnpm workspaces:
+#   - frontend/   (Next.js 14 web client)
+#   - blockchain/ (Hardhat + Solidity toolchain)
+# enclave/ (Python/FastAPI) and infra/ (Terraform) are non-Node environments
+# and are deliberately excluded from the pnpm dependency graph.
+packages:
+  - "frontend"
+  - "blockchain"
+
+# Packages allowed to run postinstall/build scripts (pnpm 10 onlyBuiltDependencies).
+# Required for: Sentry CLI + Next.js SDK (SRE telemetry), esbuild, sharp, and
+# unrs-resolver. Everything else is blocked from running build scripts by default.
+onlyBuiltDependencies:
+  - "@sentry/cli"
+  - "@sentry/nextjs"
+  - "esbuild"
+  - "sharp"
+  - "unrs-resolver"

@@ -1,0 +1,53 @@
+# BUILD.bazel — enclave domain (container image packaging).
+#
+# Phase 16 (Prompts 303, 317-319): the Rust crate itself builds in
+# //enclave/enclave_grpc (see BUILD.bazel there). This package stages the
+# main_grpc binary into a distroless base image with rules_oci; the
+# oci_load target feeds `docker load -i` (Prompt 318).
+#
+# NOTE on platform compatibility: rules_oci (v2.3.0) runs its image
+# descriptor tool through a bash launcher that it wraps for Windows — the
+# wrap step fails during analysis on Windows hosts (upstream limitation,
+# not this repo's code). Like the frontend ts_project, the OCI targets are
+# restricted to Linux where the hermetic image build runs (CI executes it
+# on ubuntu runners). On Windows the image is produced the normal way:
+# `docker build -f enclave/Dockerfile.grpc` (the Phase 11 Dockerfile).
+
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load")
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+
+LINUX_ONLY = ["@platforms//os:linux"]
+
+pkg_tar(
+    name = "main_grpc_layer",
+    srcs = ["//enclave/enclave_grpc:main_grpc"],
+    strip_prefix = "/enclave/enclave_grpc",
+)
+
+oci_image(
+    name = "image",
+    base = "@distroless_base",
+    entrypoint = ["/main_grpc"],
+    tars = [":main_grpc_layer"],
+    target_compatible_with = LINUX_ONLY,
+)
+
+oci_load(
+    name = "image_tar",
+    image = ":image",
+    repo_tags = ["ghcr.io/flare-verifiable-rag/enclave-grpc:latest"],
+    target_compatible_with = LINUX_ONLY,
+)
+
+# Everything in this package (referenced by the root //:enclave alias).
+filegroup(
+    name = "all",
+    srcs = [
+        "//enclave/enclave_grpc:main_grpc",
+        "//enclave/enclave_grpc:client_cli",
+        "//enclave/enclave_grpc:tdx_attest_tool",
+        "//enclave/enclave_grpc:enclave_grpc_lib",
+    ],
+)

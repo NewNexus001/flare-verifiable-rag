@@ -1,0 +1,41 @@
+# infra/terraform/terraform.tfvars.example
+#
+# TEMPLATE - copy to terraform.tfvars and fill in your real values.
+#
+#   cp terraform.tfvars.example terraform.tfvars
+#
+# terraform.tfvars is gitignored (see .gitignore: *.tfvars) and NEVER
+# committed - it holds deployment-specific values. This .example file IS
+# committed so every operator sees the exact variable contract.
+#
+# Every variable below mirrors variables.tf one-to-one. Placeholders are
+# descriptive on purpose: they are NOT valid deployment values and are
+# rejected by the variable validations (fail-fast) until replaced with
+# your real project data.
+
+# Required. Your GCP project ID (from the project selector in the console).
+project_id = "YOUR_GCP_PROJECT_ID"
+
+# Optional. GCP region for regional resources (Confidential VM, WIF, KMS).
+region = "us-central1"
+
+# Optional. GCP zone for the Confidential VM within the region.
+zone = "us-central1-a"
+
+# Required. SHA-256 digest of the enclave container image, recorded by
+# build-tee.yml into .teedigest after the TEE build. This binds the Workload
+# Identity to exactly one image. Must match ^sha256:[0-9a-f]{64}$ - copy the
+# value from .teedigest, e.g. sha256:9f86d081884c7d659a2feaa0c55ad015a...
+# (the placeholder below intentionally fails validation until replaced).
+container_image_digest = "sha256:REPLACE_WITH_64_LOWERCASE_HEX_CHARS_FROM_TEEDIGEST"
+
+# Optional. ID of the Workload Identity Pool holding the TEE identity.
+workload_identity_pool_id = "flare-tee-pool"
+
+# Optional. Select Intel TDX (c3-standard-4) instead of the default
+# AMD SEV-SNP (n2d-standard-2). Leave false unless you have a reason.
+enable_tdx = false
+
+# Required. Full reference of the enclave container image the Confidential
+# Space launcher runs inside the TEE. Must include a repository path.
+container_image_reference = "us-docker.pkg.dev/YOUR_GCP_PROJECT_ID/enclave/enclave:v1"

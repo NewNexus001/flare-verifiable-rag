@@ -1,0 +1,98 @@
+# MODULE.bazel — root module for flare-verifiable-rag (Bzlmod, Bazel 7/8/9).
+#
+# Phase 16 (Prompts 301-302): the hermetic polyglot build engine.
+#
+# Bazel 9 resolves third-party deps through the Bazel Central Registry
+# (BCR) via Bzlmod — the modern replacement for WORKSPACE. Each language
+# domain is a separate ruleset:
+#
+#   rules_rust      — compiles the Tokio gRPC enclave (indexer + grpc mesh)
+#   rules_oci       — OCI container images (distroless enclave image, P317-319)
+#   aspect_rules_js — Next.js frontend (rules_nodejs is deprecated; the
+#                     Aspect rules are the maintained successor)
+#
+# The Solidity domain (rules_sol) ships WORKSPACE-only, so it is loaded
+# through the legacy WORKSPACE.bazel shim below (enabled via --enable_workspace
+# in .bazelrc). Everything else is purely Bzlmod.
+
+module(
+    name = "flare_verifiable_rag",
+    version = "0.1.0",
+    compatibility_level = 1,
+)
+
+# --- Rust domain -----------------------------------------------------------
+bazel_dep(name = "rules_rust", version = "0.73.0")
+
+# --- Container domain ------------------------------------------------------
+bazel_dep(name = "rules_oci", version = "2.3.0")
+
+# --- Node/TypeScript domain ------------------------------------------------
+bazel_dep(name = "aspect_rules_js", version = "3.4.0")
+bazel_dep(name = "aspect_rules_ts", version = "3.10.0")
+
+# Register the Rust toolchain (edition 2021 — the enclave's Cargo edition).
+# Version pinned to 1.85.0 so every host downloads the SAME compiler —
+# the hermetic guarantee. rules_rust's own default is the latest stable,
+# which would make builds non-reproducible across machines.
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(
+    edition = "2021",
+    versions = ["1.85.0"],
+)
+use_repo(rust, "rust_toolchains")
+
+register_toolchains("@rust_toolchains//:all")
+
+# Host tools (cargo/rustc used to generate the crate universe) must be the
+# SAME pinned version — otherwise rules_rust's own default host tools repo
+# (latest stable) would drive dependency generation and drift from the
+# pinned toolchain. A distinct repo name avoids colliding with rules_rust's
+# built-in `rust_host_tools` instance.
+rust_host_tools = use_extension("@rules_rust//rust:extensions.bzl", "rust_host_tools")
+rust_host_tools.host_tools(
+    name = "rust_host_tools_pinned",
+    version = "1.85.0",
+)
+use_repo(rust_host_tools, "rust_host_tools_pinned")
+
+# Crate universe: derive the hermetic Rust dependency graph from the
+# enclave's own Cargo.toml/Cargo.lock (one source of truth, no mirrored
+# dependency list). host_tools pins the generator to the pinned compiler.
+crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
+crate.from_cargo(
+    name = "crates",
+    cargo_lockfile = "//enclave/enclave_grpc:Cargo.lock",
+    manifests = ["//enclave/enclave_grpc:Cargo.toml"],
+    host_tools = "@rust_host_tools_pinned",
+)
+use_repo(crate, "crates")
+
+# Frontend npm graph: resolved from the pnpm lockfile (aspect_rules_js).
+npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
+npm.npm_translate_lock(
+    name = "npm",
+    pnpm_lock = "//:pnpm-lock.yaml",
+)
+use_repo(npm, "npm")
+
+# TypeScript toolchain for aspect_rules_ts (provides the pinned tsc).
+typescript = use_extension("@aspect_rules_ts//ts:extensions.bzl", "typescript")
+typescript.deps(
+    version = "5.5.4",
+)
+use_repo(typescript, "npm_typescript")
+
+# Distroless base image for the enclave OCI image (Prompt 317).
+oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
+oci.pull(
+    name = "distroless_base",
+    image = "gcr.io/distroless/static-debian12",
+    # Pinned digest (immutable): the exact base the enclave image layers on.
+    digest = "sha256:f0d7eda44aeaf164db7ac8e6672c1f8b0a79bd52c1990099c4250a3ef9f3d543",
+    platforms = ["linux/amd64"],
+)
+use_repo(oci, "distroless_base")
+
+# rules_pkg for pkg_tar (container layer staging).
+bazel_dep(name = "rules_pkg", version = "1.0.1")

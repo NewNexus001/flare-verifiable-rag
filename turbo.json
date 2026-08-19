@@ -1,0 +1,56 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [
+    "pnpm-lock.yaml",
+    "**/.env",
+    "**/.env.local",
+    "**/.env.*.local"
+  ],
+  "globalEnv": [
+    "NODE_ENV",
+    "SENTRY_DSN",
+    "SENTRY_AUTH_TOKEN",
+    "SENTRY_ORG",
+    "SENTRY_PROJECT",
+    "NEXT_PUBLIC_SENTRY_DSN"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "dist/**",
+        "artifacts/**",
+        "!.turbo/**"
+      ]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "enclave:build": {
+      "cache": false,
+      "outputs": [],
+      "outputLogs": "full"
+    },
+    "infra:init": {
+      "cache": false,
+      "outputs": [],
+      "outputLogs": "full"
+    },
+    "infra:plan": {
+      "cache": false,
+      "outputs": [],
+      "outputLogs": "full"
+    },
+    "infra:apply": {
+      "cache": false,
+      "outputs": [],
+      "outputLogs": "full"
+    }
+  }
+}

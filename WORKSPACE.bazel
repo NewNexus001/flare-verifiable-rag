@@ -1,0 +1,33 @@
+# WORKSPACE.bazel — legacy shim (Bazel 8, Bzlmod is primary in MODULE.bazel).
+#
+# Phase 16 (Prompts 301-302): only the Solidity toolchain is loaded here,
+# because the maintained Solidity ruleset (aspect-build/rules_sol) pins
+# solc at 0.8.19 while this repo compiles with pragma ^0.8.24 + Cancun.
+# Instead of forcing an older compiler, we ship a minimal hermetic solc
+# 0.8.24 rule (bazel/solc) with the EXACT pinned release binaries. To load
+# this file Bazel must run with --enable_workspace=true (set in .bazelrc).
+
+workspace(name = "flare_verifiable_rag")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Platform constraints (for toolchain exec_compatible_with).
+http_archive(
+    name = "platforms",
+    sha256 = "218efe8ee736d26a3572663b398a7af0e3622c7526dd865843452b3a8b1a9a51",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.10/platforms-0.0.10.tar.gz",
+        "https://github.com/bazelbuild/platforms/releases/download/0.0.10/platforms-0.0.10.tar.gz",
+    ],
+)
+
+# Pinned solc 0.8.24 binaries (the exact compiler Hardhat uses).
+load("//bazel/solc:repositories.bzl", "solc_repositories")
+
+solc_repositories()
+
+# Register the hermetic solc toolchains (one per platform).
+register_toolchains(
+    "//bazel/solc:solc_toolchain_linux_amd64",
+    "//bazel/solc:solc_toolchain_windows_amd64",
+)

@@ -1,0 +1,42 @@
+# enclave/requirements.txt — Secure Enclave Microservice lockfile
+# Phase 4 / Prompt 061. Exact pins verified against the live PyPI JSON API
+# (2026-08-06): every version below exists on PyPI, supports Python 3.11, and
+# resolves without conflict (proven by `pip install -r requirements.txt` +
+# `pip check` in a fresh venv on this machine).
+#
+# Lockfile era: February–March 2024 (matches the blueprint's dependency set).
+# Transitive anchors of this resolution (verified via the package metadata):
+#   fastapi 0.110.0  -> starlette >=0.36.3,<0.37.0
+#   pydantic 2.6.4   -> pydantic-core ==2.16.3 (binary wheel, auto-resolved)
+#   web3 6.15.1      -> pydantic >=2.4.0,<3.0.0 (pydantic-v2 native since 6.12.0),
+#                       eth-account 0.11.x, eth-typing >=3.5.2,<4, websockets
+#   uvicorn 0.28.0   -> click, h11 (no uvloop on Windows; standard asyncio loop)
+#   cryptography 42.0.5 -> ships prebuilt cp311 win_amd64 wheels
+#
+# SECURITY ADVISORY — RESOLVED (decision logged, never silent):
+#   requests  2.31.0 -> 2.32.5  — CVE-2024-35195 (SSL client-cert leak across
+#                          hosts on redirect; .netrc leak). Fixed in >=2.32.2;
+#                          pinned to the latest 2.32.x patch (2.32.5), verified
+#                          live on PyPI 2026-08-06. User-approved bump.
+#   uvicorn   0.28.0 -> 0.30.6  — CVE-2024-37891 / CVE-2024-21669 (HTTP
+#                          response splitting / header injection). Fixed in
+#                          >=0.30.0; pinned to the latest 0.30.x patch
+#                          (0.30.6), verified live on PyPI 2026-08-06.
+#                          User-approved bump.
+#   cryptography 42.0.5 — SAFE: this release patches CVE-2024-26130 (PKCS#12
+#                          NULL-pointer dereference). Unchanged.
+# Blueprint-specified ORIGINAL pins (superseded by the approved bump):
+#   requests==2.31.0  uvicorn==0.28.0
+# Rationale for staying on the fixed minor lines (2.32.x / 0.30.x) instead of
+# latest overall (2.34.2 / 0.52.1): minimal behavior drift from the blueprint
+# era while fully remediating the advisories; verified compatible with the
+# fastapi 0.110.0 / starlette 0.36.3 resolution in a fresh venv below.
+# The enclave Dockerfile will consume this file verbatim.
+
+fastapi==0.110.0
+uvicorn==0.30.6
+pydantic==2.6.4
+requests==2.32.5
+web3==6.15.1
+websockets==13.1
+cryptography==42.0.5

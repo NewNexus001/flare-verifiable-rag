@@ -1,0 +1,124 @@
+{
+  "app": {
+    "title": "Flare 可验证 RAG",
+    "subtitle": "已验证 AI 知识预言机",
+    "greeting": "你好，{name}",
+    "guest": "访客"
+  },
+  "header": {
+    "copilot": "AI 助手",
+    "copilotAria": "打开 AI 助手",
+    "network": "实时网络状态"
+  },
+  "nav": {
+    "home": "首页",
+    "upgrade": "升级",
+    "profile": "个人资料",
+    "settings": "设置"
+  },
+  "dashboard": {
+    "liveSettlement": "实时结算",
+    "priceUnavailable": "价格不可用 — 合约地址未配置。",
+    "priceLoading": "读取实时数据…",
+    "priceError": "价格数据暂时不可用。",
+    "teeEnclave": "TEE 飞地",
+    "teeEnclaveDesc": "GCP 机密空间运行确定性 Rust 符号图引擎并生成 halo2 证明。",
+    "verifiedData": "已验证数据",
+    "verifiedDataDesc": "Web2 文档通过 Flare 数据连接器验证；价格与 Coston2 上的 FTSO v2 实时数据对比结算。",
+    "blindProxy": "盲代理客户端",
+    "blindProxyDesc": "文档在浏览器中使用 AES-GCM-256 加密；服务器仅转发密文到飞地 — 从不缓存。",
+    "footerChain": "Coston2 (链 ID 114) · Flare 网络",
+    "footerNote": "所有数据均从 Flare Coston2 网络实时读取。"
+  },
+  "attestation": {
+    "title": "硬件认证",
+    "status": "状态",
+    "swname": "swname",
+    "hardware": "硬件",
+    "imageDigest": "镜像摘要",
+    "attested": "已认证",
+    "unattested": "未认证",
+    "unconfigured": "暂时离线",
+    "unreachable": "不可达",
+    "description": "状态从飞地 vTPM OIDC 声明通过服务端盲代理读取，并与 Coston2 上已部署的 VerifiableRAG 合约交叉验证。",
+    "judgesNotice": "评委：点击此处查看部署详情",
+    "noticeTitle": "部署通知",
+    "noticeBody": "硬件认证服务需要配备 Intel TDX 硬件的 Google Cloud 机密空间，费用约为每月 300 美元（约 500,000 奈拉）。当前处于离线状态，但完整架构已在代码库中得到验证。",
+    "iUnderstand": "我了解了"
+  },
+  "popover": {
+    "upgradePlan": "升级计划",
+    "personalization": "个性化",
+    "profile": "个人资料",
+    "settings": "设置",
+    "help": "帮助",
+    "helpArchitecture": "架构文档",
+    "helpFaucet": "Flare Coston2 水龙头",
+    "helpSupport": "支持渠道",
+    "disconnect": "断开钱包",
+    "editName": "编辑",
+    "saveName": "保存",
+    "cancelName": "取消",
+    "enterName": "输入您的名字",
+    "tierFree": "免费",
+    "tierDeveloper": "开发者",
+    "tierEnterprise": "企业版"
+  },
+  "upgrade": {
+    "title": "升级计划",
+    "free": "免费版",
+    "freePrice": "$0",
+    "freeDesc": "Flare 可验证 RAG 预言机的基本访问权限。",
+    "developer": "开发者版",
+    "developerPrice": "$29/月",
+    "developerDesc": "优先访问、更高查询限制和 API 密钥。",
+    "enterprise": "企业版",
+    "enterprisePrice": "$299/月",
+    "enterpriseDesc": "完整 TEE 认证、自定义 SLA 和专属支持。",
+    "currentPlan": "当前计划",
+    "upgradeTo": "升级到 {plan}",
+    "comingSoon": "即将推出 — 通过智能合约的 Web3 订阅。"
+  },
+  "profile": {
+    "title": "个人资料",
+    "walletAddress": "钱包地址",
+    "transactionHistory": "Coston2 交易记录",
+    "attestationRecords": "硬件认证记录",
+    "noWallet": "连接钱包以查看您的个人资料。",
+    "noTransactions": "暂无交易记录。",
+    "noAttestation": "暂无认证记录。"
+  },
+  "settings": {
+    "title": "设置",
+    "rpcUrl": "自定义 RPC URL",
+    "gasLimit": "Gas 限制",
+    "sentryLogging": "Sentry 错误日志",
+    "sentryDesc": "启用向 Sentry 仪表板发送崩溃报告。",
+    "testConnection": "测试连接",
+    "save": "保存设置",
+    "connectionOk": "连接成功",
+    "connectionFail": "连接失败"
+  },
+  "copilot": {
+    "title": "AI 开发者助手",
+    "placeholder": "询问 FDC 选择器，{name}…",
+    "welcome": "你好 {name}，问我关于 FDC 选择器、FTSO 定价或 Solidity 模板。",
+    "help": "帮助",
+    "deploy": "一键部署",
+    "copy": "复制",
+    "copied": "已复制！",
+    "thinking": "思考中…",
+    "emptyState": "问我关于 FDC Web2Json、FTSO v2 定价或智能合约。",
+    "helpTitle": "助手帮助",
+    "helpDesc": "询问 Flare 集成相关问题。所有处理在本地 Web Worker 中运行 — 没有 AI API，数据不会离开您的浏览器。"
+  },
+  "honeypot": {
+    "title": "拒绝访问",
+    "message": "请求的资源未找到。"
+  },
+  "notFound": {
+    "title": "404 — 页面未找到",
+    "message": "您请求的资源不存在或已被移动。",
+    "backHome": "返回仪表板"
+  }
+}

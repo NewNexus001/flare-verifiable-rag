@@ -1,0 +1,74 @@
+# === Node.js / build artifacts ===
+node_modules/
+.turbo/
+.next/
+dist/
+artifacts/
+cache/
+
+# === Environment & secrets ===
+.env*
+!.env.example
+
+# === Terraform (infra/) ===
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+*.tfplan
+.terraform/
+
+# === TEE attestation digest (SHA-256 lock-in artifact) ===
+.teedigest
+
+# === Phase-generated files (hardhat / TS / coverage) ===
+typechain-types/
+coverage/
+*.tsbuildinfo
+
+# === Rust (enclave/src/rag_engine) ===
+target/
+# Cargo.lock IS committed on purpose: deterministic TEE builds require
+# a pinned dependency graph (same ethos as .teedigest / pnpm-lock.yaml).
+
+# === Bazel (Phase 16) — workspace symlinks + execroot junctions, never
+# committed (they point into the per-user _bazel_hp cache). ===
+bazel-bin/
+bazel-out/
+bazel-flare-verifiable-rag/
+bazel-testlogs/
+
+# === Rust gRPC core (enclave/enclave_grpc) ===
+enclave/enclave_grpc/target/
+
+# === Frontend tests (Phase 17/18) — coverage output ===
+frontend/coverage/
+frontend/junit.xml
+
+# === Local toolchain (downloaded binaries, never committed) ===
+.tools/
+
+# === Logs ===
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# === OS / editor ===
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.env
+*.env
+!*.env.example
+
+# === Freebuff session memory (private conversation data) ===
+.freebuff/
+
+# Python virtualenvs
+.venv/
+venv/
+
+# Python bytecode
+__pycache__/
+*.pyc

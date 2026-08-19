@@ -1,0 +1,39 @@
+# .github/workflows/bazel-ci.yml — hermetic Bazel CI (Phase 16, Prompt 315).
+#
+# Runs the exact hermetic build + test engine (`bazel build //...`,
+# `bazel test //...`) on every pull request. Uses bazelisk so the Bazel
+# version is pinned via .bazelversion, and a Bazel remote disk cache is
+# enabled so identical inputs never rebuild.
+
+name: bazel-ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  bazel-build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Mount Bazel cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/bazel
+            ~/.cache/bazel-disk
+          key: ${{ runner.os }}-bazel-${{ hashFiles('MODULE.bazel', 'WORKSPACE.bazel', 'enclave/enclave_grpc/Cargo.lock', 'pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-
+
+      - name: Hermetic build
+        run: bazel build //... --config=ci
+
+      - name: Hermetic tests
+        run: bazel test //... --config=ci --test_output=errors
+
+      - name: Zero-mock audit (Phase 16 PoW)
+        run: bash .github/scripts/audit-no-mock.sh

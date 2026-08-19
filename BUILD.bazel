@@ -1,0 +1,53 @@
+# BUILD.bazel — root package targets for flare-verifiable-rag.
+#
+# Phase 16 (Prompt 302): the top-level build declares the three language
+# domains as aliases, so `bazel build //...` compiles the whole platform
+# and `bazel test //...` runs every hermetic test suite.
+
+package(default_visibility = ["//visibility:public"])
+
+# npm dependency links (from pnpm-lock.yaml via npm_translate_lock in
+# MODULE.bazel). Monorepo pnpm workspaces link at the root; packages below
+# reference //:node_modules/<name>.
+load("@npm//:defs.bzl", "npm_link_all_packages")
+
+npm_link_all_packages(name = "node_modules")
+
+# --- Top-level domain aliases ----------------------------------------------
+# Enclave: Tokio Rust gRPC mesh (rules_rust).
+alias(
+    name = "enclave",
+    actual = "//enclave:all",
+)
+
+# Blockchain: Solidity contracts (rules_sol).
+alias(
+    name = "blockchain",
+    actual = "//blockchain:all",
+)
+
+# Frontend: Next.js dashboard (aspect_rules_js / aspect_rules_ts).
+alias(
+    name = "frontend",
+    actual = "//frontend:all",
+)
+
+# --- Workspace-level convenience targets ------------------------------------
+
+# Everything the hermetic engine produces.
+alias(
+    name = "all",
+    actual = "//:enclave",
+)
+
+# Container image of the enclave binary (rules_oci, Prompts 317-319).
+alias(
+    name = "image",
+    actual = "//enclave:image",
+)
+
+# Enclave image as a loadable tar (docker load -i, Prompt 318).
+alias(
+    name = "image_tar",
+    actual = "//enclave:image_tar",
+)

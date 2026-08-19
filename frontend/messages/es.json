@@ -1,0 +1,124 @@
+{
+  "app": {
+    "title": "Flare RAG Verificable",
+    "subtitle": "Oracle de Conocimiento IA Verificado",
+    "greeting": "Hola, {name}",
+    "guest": "Invitado"
+  },
+  "header": {
+    "copilot": "Copiloto IA",
+    "copilotAria": "Abrir Copiloto IA",
+    "network": "Estado de red en vivo"
+  },
+  "nav": {
+    "home": "Inicio",
+    "upgrade": "Mejorar",
+    "profile": "Perfil",
+    "settings": "Configuración"
+  },
+  "dashboard": {
+    "liveSettlement": "Feed de liquidación en vivo",
+    "priceUnavailable": "Precio no disponible — dirección de contrato no configurada.",
+    "priceLoading": "Leyendo feed en vivo…",
+    "priceError": "Feed de precio temporalmente no disponible.",
+    "teeEnclave": "Enclave TEE",
+    "teeEnclaveDesc": "GCP Confidential Space ejecuta el motor de grafo simbólico Rust determinista y genera pruebas halo2.",
+    "verifiedData": "Datos Verificados",
+    "verifiedDataDesc": "Los documentos Web2 son atestiguados por el Flare Data Connector; los precios se liquidan contra el feed FTSO v2 en Coston2.",
+    "blindProxy": "Cliente Proxy Ciego",
+    "blindProxyDesc": "Los documentos se cifran con AES-GCM-256 en el navegador; el servidor solo retransmite texto cifrado al enclave.",
+    "footerChain": "Coston2 (cadena 114) · Red Flare",
+    "footerNote": "Todos los valores se leen en vivo de la red Flare Coston2."
+  },
+  "attestation": {
+    "title": "Atestación de Hardware",
+    "status": "Estado",
+    "swname": "swname",
+    "hardware": "Hardware",
+    "imageDigest": "Digest de imagen",
+    "attested": "Atestiguado",
+    "unattested": "No atestiguado",
+    "unconfigured": "Temporalmente sin conexión",
+    "unreachable": "Inalcanzable",
+    "description": "El estado se lee de las reclamaciones OIDC vTPM del enclave a través del proxy ciego del lado del servidor.",
+    "judgesNotice": "Jueces: Haga clic aquí para detalles",
+    "noticeTitle": "Aviso de Despliegue",
+    "noticeBody": "El servicio de atestación de hardware requiere Google Cloud Confidential Space con hardware Intel TDX, que cuesta aproximadamente $300/mes (~500,000 NGN). Actualmente está sin conexión pero la arquitectura completa está probada en el código fuente.",
+    "iUnderstand": "Entiendo"
+  },
+  "popover": {
+    "upgradePlan": "Mejorar Plan",
+    "personalization": "Personalización",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "help": "Ayuda",
+    "helpArchitecture": "Documentación de Arquitectura",
+    "helpFaucet": "Flare Coston2 Faucet",
+    "helpSupport": "Canales de Soporte",
+    "disconnect": "Desconectar Monedero",
+    "editName": "Editar",
+    "saveName": "Guardar",
+    "cancelName": "Cancelar",
+    "enterName": "Ingrese su nombre",
+    "tierFree": "Gratis",
+    "tierDeveloper": "Desarrollador",
+    "tierEnterprise": "Empresarial"
+  },
+  "upgrade": {
+    "title": "Mejorar Plan",
+    "free": "Gratis",
+    "freePrice": "$0",
+    "freeDesc": "Acceso básico al oráculo Flare Verifiable RAG.",
+    "developer": "Desarrollador",
+    "developerPrice": "$29/mes",
+    "developerDesc": "Acceso prioritario, límites de consulta más altos y claves API.",
+    "enterprise": "Empresarial",
+    "enterprisePrice": "$299/mes",
+    "enterpriseDesc": "Atestación TEE completa, SLA personalizado y soporte dedicado.",
+    "currentPlan": "Plan Actual",
+    "upgradeTo": "Mejorar a {plan}",
+    "comingSoon": "Próximamente — suscripción Web3 vía contrato inteligente."
+  },
+  "profile": {
+    "title": "Perfil",
+    "walletAddress": "Dirección del Monedero",
+    "transactionHistory": "Historial de Transacciones en Coston2",
+    "attestationRecords": "Registros de Atestación de Hardware",
+    "noWallet": "Conecte su monedero para ver su perfil.",
+    "noTransactions": "Sin transacciones aún.",
+    "noAttestation": "Sin registros de atestación aún."
+  },
+  "settings": {
+    "title": "Configuración",
+    "rpcUrl": "URL RPC Personalizada",
+    "gasLimit": "Límite de Gas",
+    "sentryLogging": "Registro de Errores Sentry",
+    "sentryDesc": "Habilitar informes de errores al panel Sentry.",
+    "testConnection": "Probar Conexión",
+    "save": "Guardar Configuración",
+    "connectionOk": "Conexión exitosa",
+    "connectionFail": "Conexión fallida"
+  },
+  "copilot": {
+    "title": "Copiloto IA para Desarrolladores",
+    "placeholder": "Pida un selector FDC, {name}…",
+    "welcome": "Hola {name}, pregúnteme sobre selectores FDC, precios FTSO o código Solidity.",
+    "help": "Ayuda",
+    "deploy": "Despliegue en Un Clic",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "thinking": "Pensando…",
+    "emptyState": "Pregúnteme sobre FDC Web2Json, precios FTSO v2 o contratos inteligentes.",
+    "helpTitle": "Ayuda del Copiloto",
+    "helpDesc": "Haga preguntas sobre integraciones Flare. Todo el procesamiento ocurre localmente en un Web Worker — sin API de IA, nada sale de su navegador."
+  },
+  "honeypot": {
+    "title": "Acceso Denegado",
+    "message": "El recurso solicitado no fue encontrado."
+  },
+  "notFound": {
+    "title": "404 — Página No Encontrada",
+    "message": "El recurso que solicitó no existe o ha sido movido.",
+    "backHome": "Volver al Panel"
+  }
+}

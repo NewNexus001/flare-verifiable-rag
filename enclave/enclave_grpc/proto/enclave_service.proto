@@ -1,0 +1,81 @@
+// enclave/proto/enclave_service.proto
+//
+// Phase 11 (Prompt 202) — EnclaveService gRPC contract.
+//
+// The Tokio Rust enclave core exposes three RPCs:
+//   ExecuteQuery          — deterministic symbolic-graph query (O(k) bound)
+//                           with a ZK proof payload in the response.
+//   GetAttestationToken   — IETF RATS EAT (RFC 9334) COSE-Sign1 token bytes
+//                           bound to the enclave's TEE measurement.
+//   StreamFtsoFeeds       — server-streaming FTSO v2 fast-update price feed.
+//
+// Wire contract is versioned in the package name (enclave.v1).
+
+syntax = "proto3";
+
+package enclave.v1;
+
+service EnclaveService {
+  // Execute a deterministic query against the symbolic knowledge graph.
+  rpc ExecuteQuery(QueryRequest) returns (QueryResponse);
+
+  // Fetch the hardware-attestation EAT token (COSE-Sign1 / RFC 9334).
+  rpc GetAttestationToken(AttestationRequest) returns (AttestationResponse);
+
+  // Stream live FTSO v2 fast-update price feeds (server-streaming).
+  rpc StreamFtsoFeeds(FtsoFeedsRequest) returns (stream FtsoFeed);
+}
+
+message QueryRequest {
+  // Document the query runs against (indexed earlier by the graph engine).
+  string document_id = 1;
+  // The natural-language / logical prompt to evaluate.
+  string prompt = 2;
+  // Optional client-side encrypted payload (AES-GCM-256 envelope).
+  bytes encrypted_payload = 3;
+}
+
+message QueryResponse {
+  // Deterministic output produced by the graph engine.
+  string output = 1;
+  // ZK proof bytes (halo2 / BN254) attesting the execution.
+  bytes proof = 2;
+  // Public inputs bound into the proof.
+  bytes doc_hash = 3;
+  bytes prompt_hash = 4;
+  bytes output_hash = 5;
+  // Measured execution latency in milliseconds.
+  uint64 latency_ms = 6;
+}
+
+message AttestationRequest {
+  // Caller-supplied nonce — echoed into the EAT so the token is
+  // single-use / session-bound.
+  string nonce = 1;
+  // Intended audience (e.g. the relying-party contract address).
+  string audience = 2;
+}
+
+message AttestationResponse {
+  // Raw COSE-Sign1 EAT token (CBOR, RFC 9334).
+  bytes eat_token = 1;
+  // Parsed convenience claims for display / cross-checking.
+  string swname = 2;
+  string image_digest = 3;
+  string hardware = 4;
+  string instance_id = 5;
+}
+
+message FtsoFeedsRequest {
+  // Feed identifiers (e.g. "FXRP/USD", "BTC/USD").
+  repeated string feed_ids = 1;
+  // Stop streaming after this many updates (0 = unbounded).
+  uint32 max_updates = 2;
+}
+
+message FtsoFeed {
+  string feed_id = 1;
+  // Price as a decimal string (raw feed precision).
+  string price = 2;
+  uint64 timestamp = 3;
+}

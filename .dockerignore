@@ -1,0 +1,29 @@
+# .dockerignore — hermetic docker build contexts (Phase 16).
+#
+# Whitelist approach: exclude EVERYTHING by default, then re-include only the
+# paths the images need. This keeps contexts tiny (source only — never the
+# multi-GB Bazel execroot, cargo target/, node_modules, .next, infra state or
+# local tool caches) so image layers are reproducible and transfers are fast.
+# The enclave image builds with context ./enclave and the frontend image with
+# root context — this file applies to the root-context build (frontend).
+
+# Exclude everything by default.
+*
+
+# --- Frontend image (root context: `docker build -f frontend/Dockerfile .`)
+# Workspace manifests + lockfile first (pnpm needs them to resolve deps).
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+# Workspace member manifests (needed for a full frozen install).
+!blockchain/
+!blockchain/package.json
+!frontend/
+!frontend/**
+
+# --- Exclusions within the re-included paths -----------------------------
+**/node_modules/
+**/.next/
+**/.turbo/
+**/.vercel/
+**/*.tsbuildinfo
