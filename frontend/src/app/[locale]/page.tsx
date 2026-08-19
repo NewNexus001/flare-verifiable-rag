@@ -131,6 +131,27 @@ export default function Home() {
       }}
     >
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+        {/* Hero banner */}
+        <div
+          style={{
+            marginTop: "1.5rem",
+            borderRadius: 20,
+            overflow: "hidden",
+            border: "1px solid #2a3150",
+          }}
+        >
+          <img
+            src="/flare-ecosystem-banner.png"
+            alt="Flare Ecosystem — Verifiable Knowledge Oracle architecture"
+            style={{
+              width: "100%",
+              height: "auto",
+              display: "block",
+              objectFit: "contain",
+            }}
+          />
+        </div>
+
         <div style={{ marginTop: "1.5rem" }}>
           <h1 style={{ margin: "0 0 0.35rem", fontSize: "1.7rem", letterSpacing: "-0.02em" }}>
             Flare Verifiable RAG
