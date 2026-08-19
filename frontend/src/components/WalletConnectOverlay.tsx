@@ -110,12 +110,11 @@ export function WalletConnectOverlay({ connecting, connected }: Props) {
     }
   }, [connecting]);
 
-  // Transition to confirmed after connection succeeds
+  // Transition to confirmed after connection succeeds — FAST
   useEffect(() => {
     if (connected && phase === "connecting") {
-      // Short delay so the user sees "confirmed" before the overlay fades
-      const t = setTimeout(() => setPhase("confirmed"), 300);
-      const t2 = setTimeout(() => setShowConfirming(false), 2500);
+      const t = setTimeout(() => setPhase("confirmed"), 200);
+      const t2 = setTimeout(() => setShowConfirming(false), 1200);
       return () => { clearTimeout(t); clearTimeout(t2); };
     }
   }, [connected, phase]);

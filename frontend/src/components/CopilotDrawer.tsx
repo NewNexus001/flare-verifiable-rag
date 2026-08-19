@@ -166,12 +166,15 @@ export function CopilotDrawer() {
     return () => worker.terminate();
   }, []);
 
-  // Open via header FAB event.
+  // Open via header FAB event — only when wallet is connected.
   useEffect(() => {
-    const onOpen = () => setOpen(true);
+    const onOpen = () => {
+      if (!isConnected) return; // block when wallet not connected
+      setOpen(true);
+    };
     window.addEventListener(OPEN_COPILOT_EVENT, onOpen);
     return () => window.removeEventListener(OPEN_COPILOT_EVENT, onOpen);
-  }, []);
+  }, [isConnected]);
 
   // Auto-scroll to the newest message.
   useEffect(() => {
