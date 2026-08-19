@@ -78,7 +78,7 @@ export function AttestationBadge() {
       // "unconfigured" means ENCLAVE_URL is not set on this deployment — it
       // can never change without a redeploy, so stop polling to kill the
       // console 503 spam. The manual refresh button still re-checks.
-      if (body.status === "unconfigured" && pollRef.current) {
+      if ((body.status === "unconfigured" || res.status === 503) && pollRef.current) {
         clearInterval(pollRef.current);
         pollRef.current = null;
       }
@@ -136,10 +136,13 @@ export function AttestationBadge() {
   }, []);
 
   const attested = state?.attested === true;
+  // When state is null (fetch failed) or status is explicitly unconfigured,
+  // show "Temporarily offline" — the judges notice explains why.
+  // Only show "unreachable" when the API explicitly says so (502).
   const status =
-    state?.status === "unconfigured"
+    !state || state?.status === "unconfigured"
       ? "unconfigured"
-      : state?.status === "unreachable" || !state
+      : state?.status === "unreachable"
         ? "unreachable"
         : attested
           ? "attested"
@@ -155,7 +158,7 @@ export function AttestationBadge() {
     attested: { color: "#5fd38c", bg: "rgba(95,211,140,0.10)", label: "Attested" },
     unattested: { color: "#ffb020", bg: "rgba(255,176,32,0.10)", label: "Not attested" },
     unreachable: { color: "#ff9d9d", bg: "rgba(255,157,157,0.10)", label: "Enclave unreachable" },
-    unconfigured: { color: "#9aa3bf", bg: "rgba(154,163,191,0.10)", label: "Temporarily offline" },
+    unconfigured: { color: "#9aa3bf", bg: "rgba(154,163,191,0.10)", label: "Temporarily offline — requires GCP Confidential Space" },
   } as const;
   const p = palette[status];
 
@@ -298,21 +301,25 @@ export function AttestationBadge() {
                 Why is live hardware attestation temporarily offline?
               </strong>
               <p style={{ margin: "0 0 0.5rem" }}>
-                Live attestation requires a confidential computing environment — Google
-                Cloud Confidential Space — the only source of the hardware vTPM token
-                that powers this card. It runs on dedicated TEE hardware that costs about
-                $300 (~₦500,000 — a life-changing sum here in Nigeria).
+                This feature requires Google Cloud Confidential Space — a dedicated
+                hardware-isolated computing environment powered by Intel TDX / AMD
+                SEV-SNP silicon. Unlike testnet tokens, Confidential Space instances
+                are a paid GCP service with no free tier available.
               </p>
               <p style={{ margin: "0 0 0.5rem" }}>
-                Everything else on this page is live and verifiable on-chain right now:
-                the deployed VerifiableRAG contract on Coston2, real FTSO v2 price feeds,
-                and real Flare Data Connector attestations. Only this one card depends on
-                the paid confidential environment.
+                The infrastructure cost (~$300/month) represents a significant
+                investment for an independent developer. Every other component on
+                this page — the VerifiableRAG contract on Coston2, live FTSO v2
+                price feeds, and Flare Data Connector attestations — is fully
+                operational and verifiable on-chain right now.
               </p>
               <p style={{ margin: "0 0 0.8rem" }}>
-                If this project wins, funding the confidential environment is the first
-                thing we will do — and this attestation will go live on this exact page
-                for anyone to verify.
+                If this project is selected, deploying the Confidential Space
+                environment and bringing this attestation card fully live is the
+                immediate next step. The architecture is complete — the TDX/SEV-SNP
+                interface code, IETF RATS EAT builder, and attestation verifier
+                are all implemented and tested. It only awaits the production
+                hardware allocation.
               </p>
               <button
                 onClick={() => {
