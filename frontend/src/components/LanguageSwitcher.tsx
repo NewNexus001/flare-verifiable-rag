@@ -3,12 +3,11 @@
 /**
  * LanguageSwitcher.tsx — dropdown language selector (Phase 19, P364/P365).
  *
- * Renders a dropdown with language flags and labels.
- * Language selection is persisted in localStorage and
- * switches the /[locale]/ route via next-intl router.
+ * Uses next-intl client router to switch locales WITHOUT triggering
+ * a full page reload (which would disconnect wagmi wallet state).
  */
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "@/navigation";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Globe } from "lucide-react";
@@ -44,20 +43,17 @@ export function LanguageSwitcher() {
   }, []);
 
   function switchLanguage(code: Locale) {
-    // Replace the locale segment in the current pathname
-    const segments = pathname.split("/");
-    // segments[0] = "", segments[1] = locale, segments[2+] = rest
-    segments[1] = code;
-    const newPath = segments.join("/") || `/${code}`;
-
     // Persist choice
     try {
       localStorage.setItem("vrag-locale", code);
     } catch {
-      // localStorage unavailable (SSR / private mode) — silently ignore
+      // localStorage unavailable (SSR / private mode)
     }
 
-    router.push(newPath);
+    // Use next-intl router.replace — this swaps locale in-place
+    // WITHOUT triggering middleware redirects or full page reloads.
+    // wagmi wallet state survives because the React tree stays mounted.
+    router.replace(pathname, { locale: code });
     setOpen(false);
   }
 

@@ -144,6 +144,12 @@
     "teeAttestation": "TEE 认证",
     "selectLanguage": "选择语言"
   },
+  "overlay": {
+    "confirming": "确认钱包连接中…",
+    "approve": "请在钱包中批准",
+    "confirmed": "钱包连接已确认",
+    "continue": "继续"
+  },
   "gate": {
     "description": "连接钱包以访问可验证知识预言机。所有数据读取、加密文档上传和链上结算都需要经过身份验证的 Web3 会话。",
     "trust1": "客户端 AES-GCM-256 加密",

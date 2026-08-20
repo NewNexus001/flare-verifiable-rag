@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useTranslations } from "next-intl";
 import { ChevronDown, ShieldCheck, Wallet, Download } from "lucide-react";
+import { useRequestConnect } from "@/components/DashboardShell";
 
 function useWalletInstalled() {
   const [installed, setInstalled] = useState<boolean | null>(null);
@@ -27,6 +28,7 @@ function useWalletInstalled() {
 export function ConnectWallet() {
   const t = useTranslations();
   const walletInstalled = useWalletInstalled();
+  const requestConnect = useRequestConnect();
 
   // Wallet not installed — show install button
   if (walletInstalled === false) {
@@ -74,7 +76,7 @@ export function ConnectWallet() {
           >
             {!account || !chain ? (
               <button
-                onClick={openConnectModal}
+                onClick={() => { requestConnect(); openConnectModal(); }}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",

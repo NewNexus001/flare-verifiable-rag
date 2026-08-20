@@ -32,6 +32,7 @@ import { ethers } from "hardhat";
 import {
   loadFixture,
   time,
+  mine,
 } from "@nomicfoundation/hardhat-network-helpers";
 import type { ZkTlsRelayer } from "../typechain-types/contracts/ZkTlsRelayer";
 import type { VerifiableRAG } from "../typechain-types/contracts/VerifiableRAG";
@@ -156,7 +157,9 @@ describe("ZkTlsRelayer (Phase 14)", function () {
       const dataHash = ethers.keccak256(ethers.toUtf8Bytes("true"));
       const responseHash = ethers.keccak256(ethers.toUtf8Bytes('{"completed":true}'));
       const certFingerprint = ethers.keccak256(ethers.toUtf8Bytes("chain-fingerprint"));
-      const ts = BigInt(Math.floor(Date.now() / 1000));
+      // Use block.timestamp (not Date.now) so the proof is fresh relative
+      // to Hardhat's EVM clock, avoiding StaleProof reverts on slow machines.
+      const blockTs = BigInt(await time.latest());
       const nonce = ethers.hexlify(ethers.randomBytes(16));
 
       const proof = buildProof({
@@ -165,10 +168,12 @@ describe("ZkTlsRelayer (Phase 14)", function () {
         dataHash,
         responseHash,
         certFingerprint,
-        ts,
+        ts: blockTs,
         nonce,
       });
 
+      // Mine one block so block.timestamp advances past the proof ts.
+      await mine(1);
       const tx = await contract.relayVerifiedWeb2Data(proof, urlHash, dataHash);
       // The event's timestamp is the RELAY block's timestamp (block.timestamp
       // at execution), not the proof's mint time — allow the standard block
@@ -206,10 +211,11 @@ describe("ZkTlsRelayer (Phase 14)", function () {
       const dataHash = ethers.keccak256(ethers.toUtf8Bytes("42"));
       const responseHash = ethers.ZeroHash;
       const certFingerprint = ethers.ZeroHash;
-      const ts = BigInt(Math.floor(Date.now() / 1000));
+      const blockTs = BigInt(await time.latest());
       const nonce = ethers.hexlify(ethers.randomBytes(16));
-      const proof = buildProof({ signer: enclaveWallet, urlHash, dataHash, responseHash, certFingerprint, ts, nonce });
+      const proof = buildProof({ signer: enclaveWallet, urlHash, dataHash, responseHash, certFingerprint, ts: blockTs, nonce });
 
+      await mine(1);
       await contract.relayVerifiedWeb2Data(proof, urlHash, dataHash);
       await expect(contract.relayVerifiedWeb2Data(proof, urlHash, dataHash)).to.be.revertedWithCustomError(
         contract,
@@ -223,7 +229,10 @@ describe("ZkTlsRelayer (Phase 14)", function () {
 
       const urlHash = ethers.keccak256(ethers.toUtf8Bytes("https://example.com/stale"));
       const dataHash = ethers.keccak256(ethers.toUtf8Bytes("1"));
-      const staleTs = BigInt(Math.floor(Date.now() / 1000)) - 301n; // 1s past the 300s window
+      // Build a proof whose timestamp is 401 seconds BEHIND the current
+      // block timestamp — well outside the 300s PROOF_MAX_AGE window.
+      const currentTs = BigInt(await time.latest());
+      const staleTs = currentTs - 401n;
       const proof = buildProof({
         signer: enclaveWallet,
         urlHash,
@@ -234,10 +243,8 @@ describe("ZkTlsRelayer (Phase 14)", function () {
         nonce: ethers.hexlify(ethers.randomBytes(16)),
       });
 
-      // Deterministically advance the chain clock far beyond the 300s
-      // freshness window (hardhat's first block timestamp lags Date.now()
-      // by the test setup latency, so the window must be enforced via
-      // an explicit clock jump — not wall-clock arithmetic).
+      // Advance block.timestamp 400s past the proof so the freshness
+      // check fails: block.timestamp > f.ts + PROOF_MAX_AGE.
       await time.increase(400);
 
       await expect(contract.relayVerifiedWeb2Data(proof, urlHash, dataHash)).to.be.revertedWithCustomError(
@@ -259,10 +266,11 @@ describe("ZkTlsRelayer (Phase 14)", function () {
         dataHash,
         responseHash: ethers.ZeroHash,
         certFingerprint: ethers.ZeroHash,
-        ts: BigInt(Math.floor(Date.now() / 1000)),
+        ts: BigInt(await time.latest()),
         nonce: ethers.hexlify(ethers.randomBytes(16)),
       });
 
+      await mine(1);
       await expect(contract.relayVerifiedWeb2Data(proof, urlHash, dataHash))
         .to.be.revertedWithCustomError(contract, "UnauthorizedZkTlsSigner")
         .withArgs(rogue.address);
@@ -280,10 +288,11 @@ describe("ZkTlsRelayer (Phase 14)", function () {
         dataHash,
         responseHash: ethers.ZeroHash,
         certFingerprint: ethers.ZeroHash,
-        ts: BigInt(Math.floor(Date.now() / 1000)),
+        ts: BigInt(await time.latest()),
         nonce: ethers.hexlify(ethers.randomBytes(16)),
       });
 
+      await mine(1);
       // Relay the same proof with a DIFFERENT dataHash argument — the
       // embedded data_hash in the proof no longer matches the argument.
       const otherDataHash = ethers.keccak256(ethers.toUtf8Bytes("false"));
@@ -312,10 +321,11 @@ describe("ZkTlsRelayer (Phase 14)", function () {
         dataHash,
         responseHash: ethers.ZeroHash,
         certFingerprint: ethers.ZeroHash,
-        ts: BigInt(Math.floor(Date.now() / 1000)),
+        ts: BigInt(await time.latest()),
         nonce: ethers.hexlify(ethers.randomBytes(16)),
         version: 9,
       });
+      await mine(1);
       await expect(contract.relayVerifiedWeb2Data(proof, urlHash, dataHash))
         .to.be.revertedWithCustomError(contract, "UnsupportedProofVersion")
         .withArgs(9);
@@ -348,9 +358,10 @@ describe("ZkTlsRelayer (Phase 14)", function () {
         dataHash,
         responseHash: ethers.keccak256(ethers.toUtf8Bytes('{"completed":true}')),
         certFingerprint: ethers.ZeroHash,
-        ts: BigInt(Math.floor(Date.now() / 1000)),
+        ts: BigInt(await time.latest()),
         nonce: ethers.hexlify(ethers.randomBytes(16)),
       });
+      await mine(1);
       await relayer.relayVerifiedWeb2Data(proof, urlHash, dataHash);
 
       // VerifiableRAG reads the verified data THROUGH the relayer.

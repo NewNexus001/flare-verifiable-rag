@@ -144,6 +144,12 @@
     "teeAttestation": "TEE Attestation",
     "selectLanguage": "Select language"
   },
+  "overlay": {
+    "confirming": "Confirming wallet connection…",
+    "approve": "Please approve in your wallet",
+    "confirmed": "Wallet connection confirmed",
+    "continue": "Continue"
+  },
   "gate": {
     "description": "Connect your wallet to access the verifiable knowledge oracle. All data reads, encrypted document uploads, and on-chain settlements require an authenticated Web3 session.",
     "trust1": "Client-side AES-GCM-256 encryption",

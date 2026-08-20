@@ -144,6 +144,12 @@
     "teeAttestation": "Atestación TEE",
     "selectLanguage": "Seleccionar idioma"
   },
+  "overlay": {
+    "confirming": "Confirmando conexión del monedero…",
+    "approve": "Por favor apruebe en su monedero",
+    "confirmed": "Conexión del monedero confirmada",
+    "continue": "Continuar"
+  },
   "gate": {
     "description": "Conecta tu monedero para acceder al oráculo de conocimiento verificable. Todas las lecturas de datos, subidas encriptadas y liquidaciones on-chain requieren una sesión Web3 autenticada.",
     "trust1": "Cifrado AES-GCM-256 del lado del cliente",
