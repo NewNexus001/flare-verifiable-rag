@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup pnpm (pinned 10.4.1)
-        uses: pnpm/action-setup@ff378ebe6b225b0680b81c1ad4498ae0d1d3a5e3 # v6.0.10 (SHA verified via GitHub API 2026-08-12)
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10 (SHA verified via GitHub API 2026-08-12)
         with:
           version: 10.4.1
 
@@ -61,7 +61,7 @@ jobs:
 
       - name: Build TEE enclave image (deterministic, no provenance)
         id: build-enclave
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: ./enclave
           push: true
