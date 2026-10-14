@@ -31,12 +31,12 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup pnpm (pinned 10.4.1)
-        uses: pnpm/action-setup@ff378ebe6b225b0680b81c1ad4498ae0d1d3a5e3 # v6.0.10 (SHA verified via GitHub API 2026-08-12)
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10 (SHA verified via GitHub API 2026-08-12)
         with:
           version: 10.4.1
 
       - name: Setup Node 20
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 20
           cache: pnpm
@@ -61,7 +61,7 @@ jobs:
 
       - name: Build TEE enclave image (deterministic, no provenance)
         id: build-enclave
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: ./enclave
           push: true
@@ -76,7 +76,7 @@ jobs:
           cat .teedigest
 
       - name: Upload digest artifact (WIP attestation input)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: enclave-digest
           path: .teedigest
@@ -130,7 +130,7 @@ jobs:
           cargo build --release --target x86_64-unknown-linux-musl --bin tdx_attest_tool
 
       - name: Upload attestation-tool artifact (mints EATs on the TEE)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: tdx-attest-tool
           path: enclave/enclave_grpc/target/x86_64-unknown-linux-musl/release/tdx_attest_tool
